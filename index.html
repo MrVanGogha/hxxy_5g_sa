@@ -1,0 +1,1103 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>5G SA 专网仿真工作台</title>
+<script type="text/javascript" src="https://robot.chaoxing.com/sdk/CxRobotSdkJs.js"></script>
+<style>
+  :root{
+    --bg:#F4F6F9; --panel:#FFFFFF; --panel-2:#F7F9FC;
+    --border:#DEE5EC; --border-soft:#EAEFF4;
+    --text:#1B2A3A; --muted:#5B6B7C; --faint:#8C9AA9;
+    --ok:#1E9E6E; --ok-bg:#E7F6EF;
+    --warn:#C07F14; --warn-bg:#FCF3E0;
+    --bad:#D6432F; --bad-bg:#FCE9E5;
+    --blue:#2C6FE0; --blue-bg:#EAF1FD;
+    --purple:#7C5CD6; --purple-bg:#F0EBFC;
+    --mono: ui-monospace, "Cascadia Mono", Consolas, monospace;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);font-family:"Microsoft YaHei","PingFang SC",system-ui,sans-serif;line-height:1.6}
+
+  /* ===== 顶栏 ===== */
+  header{background:var(--panel);border-bottom:1px solid var(--border);padding:14px 28px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;position:sticky;top:0;z-index:50}
+  header .logo{font-size:18px;font-weight:700}
+  header .logo small{display:block;font-size:12px;color:var(--muted);font-weight:400}
+  header .spacer{flex:1}
+  .hbtn{background:var(--panel-2);border:1px solid var(--border);border-radius:8px;padding:7px 14px;font-size:13px;color:var(--muted);cursor:pointer}
+  .hbtn:hover{border-color:var(--blue);color:var(--blue)}
+
+  .layout{display:grid;grid-template-columns:250px 1fr;gap:0;max-width:1440px;margin:0 auto;min-height:calc(100vh - 62px)}
+  @media(max-width:900px){.layout{grid-template-columns:1fr}}
+
+  /* ===== 步骤导航 ===== */
+  nav.steps{background:var(--panel);border-right:1px solid var(--border);padding:20px 14px;position:sticky;top:62px;align-self:start;height:calc(100vh - 62px);overflow:auto}
+  @media(max-width:900px){nav.steps{position:static;height:auto;display:flex;overflow-x:auto;gap:8px;border-right:none;border-bottom:1px solid var(--border)}}
+  .step-item{display:flex;gap:12px;padding:12px 12px;border-radius:10px;cursor:pointer;border:1px solid transparent;margin-bottom:6px;align-items:flex-start;min-width:200px}
+  .step-item:hover{background:var(--panel-2)}
+  .step-item.active{background:var(--blue-bg);border-color:var(--blue)}
+  .step-item.locked{opacity:.45;cursor:not-allowed}
+  .step-num{flex:0 0 26px;width:26px;height:26px;border-radius:50%;background:var(--panel-2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--muted)}
+  .step-item.active .step-num{background:var(--blue);color:#fff;border-color:var(--blue)}
+  .step-item.done .step-num{background:var(--ok);color:#fff;border-color:var(--ok)}
+  .step-name{font-size:13.5px;font-weight:600}
+  .step-desc{font-size:11.5px;color:var(--faint);margin-top:1px}
+
+  /* ===== 主区 ===== */
+  main{padding:26px 32px 90px;min-width:0}
+  .step-page{display:none;animation:fade .25s}
+  .step-page.show{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1}}
+  .page-title{font-size:21px;font-weight:700;margin:0 0 4px}
+  .page-sub{color:var(--muted);font-size:13.5px;margin:0 0 22px}
+  .card{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:18px 20px;margin-bottom:18px}
+  .card h3{margin:0 0 12px;font-size:15px}
+  .hint{background:var(--blue-bg);border:1px solid #C9DBF9;border-radius:10px;padding:12px 16px;font-size:13px;color:#2B4E8F;margin-bottom:18px}
+  .hint b{color:var(--blue)}
+
+  /* 场景卡片 */
+  .scn-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
+  .scn-card{border:2px solid var(--border);border-radius:12px;padding:14px 16px;cursor:pointer;background:var(--panel);transition:.15s}
+  .scn-card:hover{border-color:var(--blue)}
+  .scn-card.active{border-color:var(--ok);background:var(--ok-bg)}
+  .scn-card .ic{font-size:22px}
+  .scn-card .nm{font-weight:700;font-size:15px;margin:4px 0 2px}
+  .scn-card .cat{font-size:11px;font-family:var(--mono);padding:2px 8px;border-radius:12px;background:var(--purple-bg);color:var(--purple);display:inline-block;margin-bottom:6px}
+  .scn-card .bf{font-size:12.5px;color:var(--muted)}
+
+  /* 需求指标表 */
+  table.req{width:100%;border-collapse:collapse;font-size:13.5px}
+  table.req th,table.req td{border:1px solid var(--border);padding:8px 12px;text-align:left}
+  table.req th{background:var(--panel-2);width:130px;color:var(--muted);font-weight:600}
+  .tag{display:inline-block;font-size:11.5px;font-family:var(--mono);background:var(--panel-2);border:1px solid var(--border-soft);border-radius:12px;padding:2px 10px;color:var(--muted);margin:2px 4px 2px 0}
+
+  /* 带宽计算器 */
+  .calc-row{display:grid;grid-template-columns:1.6fr .7fr .8fr .8fr .8fr 40px;gap:10px;align-items:center;padding:8px 0;border-bottom:1px dashed var(--border-soft);font-size:13.5px}
+  .calc-row.head{font-size:12px;color:var(--faint);font-weight:600;border-bottom:1px solid var(--border)}
+  select,input[type=number]{width:100%;background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:8px 10px;font-size:13.5px;color:var(--text);font-family:inherit}
+  select:focus,input:focus{outline:2px solid var(--blue);outline-offset:1px}
+  .c-del{background:none;border:none;color:var(--bad);cursor:pointer;font-size:15px}
+  .calc-sum-bar{display:flex;gap:28px;margin-top:14px;padding:14px 18px;background:var(--panel-2);border-radius:10px;font-size:14px;flex-wrap:wrap}
+  .calc-sum-bar b{font-family:var(--mono);font-size:17px}
+  .btn{background:var(--blue);color:#fff;border:none;border-radius:8px;padding:9px 20px;font-size:13.5px;font-weight:600;cursor:pointer}
+  .btn:hover{filter:brightness(1.07)}
+  .btn.ok{background:var(--ok)}
+  .btn.ghost{background:var(--panel);color:var(--blue);border:1px solid var(--blue)}
+  .btn:disabled{background:var(--border);color:var(--faint);cursor:not-allowed}
+  .suggest{margin-top:10px;font-size:13px;padding:10px 14px;border-radius:8px;background:var(--ok-bg);border:1px solid #BDE5D2;color:#146B4B;display:none}
+  .suggest.show{display:block}
+
+  /* 思考前置 */
+  .think{border-left:4px solid var(--purple);background:var(--purple-bg);border-radius:0 10px 10px 0;padding:12px 16px;margin-bottom:16px;font-size:13.5px}
+  .think .tq{font-weight:600;margin-bottom:8px}
+  .think label{display:inline-flex;align-items:center;gap:5px;margin-right:16px;cursor:pointer;color:var(--text)}
+  .think .verdict{margin-top:8px;font-size:12.5px;display:none}
+  .think .verdict.right{color:var(--ok)}
+  .think .verdict.wrong{color:var(--warn)}
+
+  /* 参数卡 */
+  .pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
+  .pcard{border:1px solid var(--border);border-left:4px solid var(--border);border-radius:10px;padding:13px 16px;background:var(--panel)}
+  .pcard label{display:block;font-size:13px;font-weight:700;color:var(--muted);margin-bottom:7px}
+  .pcard .status{margin-top:9px;font-size:12.5px;line-height:1.55;display:none}
+  .pcard.st-ok{border-left-color:var(--ok);background:linear-gradient(0deg,var(--ok-bg),var(--panel) 70%)}
+  .pcard.st-bad{border-left-color:var(--bad)}
+  .pcard.st-warn{border-left-color:var(--warn)}
+  .pcard.st-ok .status,.pcard.st-bad .status,.pcard.st-warn .status,.pcard.st-pending .status{display:block}
+  .pcard.st-bad .status{color:var(--bad)}
+  .pcard.st-warn .status{color:var(--warn)}
+  .retry{display:inline-block;margin-top:6px;font-size:12px;color:var(--blue);background:none;border:none;cursor:pointer;text-decoration:underline;padding:0}
+  .badge4g{font-size:10.5px;font-family:var(--mono);background:var(--purple-bg);color:var(--purple);border-radius:10px;padding:1px 8px;margin-left:6px;font-weight:400}
+
+  /* 拓扑 */
+  .topo-wrap{overflow-x:auto}
+  .topo-wrap svg{width:100%;min-width:820px;height:auto;display:block}
+  .tn-box{fill:#F7F9FC;stroke:#C9D4E0;stroke-width:1.4}
+  .tn-title{font-size:14px;font-weight:700;fill:#1B2A3A}
+  .tn-sub{font-size:11px;fill:#8C9AA9}
+  .tn-anno{fill:#fff;stroke:#DEE5EC}
+  .tn-name{font-size:11.5px;font-weight:600;fill:#5B6B7C}
+  .tn-val{font-size:12px;fill:#1B2A3A;font-family:var(--mono)}
+  .tn-state{font-size:11px;fill:#8C9AA9}
+  .topo-conn path{fill:none;stroke:#B8C6D4;stroke-width:1.6}
+  .st-ok .tn-anno{stroke:var(--ok);stroke-width:2}
+  .st-ok .tn-state{fill:var(--ok)}
+  .st-bad .tn-anno{stroke:var(--bad);stroke-width:2}
+  .st-bad .tn-state{fill:var(--bad)}
+  .st-warn .tn-anno{stroke:var(--warn);stroke-width:2}
+  .st-warn .tn-state{fill:var(--warn)}
+  .boundary{fill:none;stroke:#C9D4E0;stroke-width:1.6;stroke-dasharray:7 5;border-radius:14px}
+  .boundary.st-ok{stroke:var(--ok)}
+  .tn-plane{font-size:11px;fill:#A8B5C2;font-family:var(--mono)}
+
+  /* 结果区 */
+  .score-hero{display:flex;align-items:center;gap:22px;flex-wrap:wrap}
+  .ring{width:96px;height:96px;border-radius:50%;border:7px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:26px;font-weight:700;flex:0 0 auto}
+  .diag{border:1px solid var(--border);border-radius:10px;padding:12px 16px;margin-bottom:10px;font-size:13.5px}
+  .diag.ok{border-left:4px solid var(--ok)}
+  .diag.bad{border-left:4px solid var(--bad);background:var(--bad-bg)}
+  .diag.warn{border-left:4px solid var(--warn);background:var(--warn-bg)}
+  .diag .dt{font-weight:700;margin-bottom:3px}
+  .gauge{height:10px;border-radius:5px;background:var(--panel-2);overflow:hidden;margin:6px 0}
+  .gauge>div{height:100%;border-radius:5px}
+  table.map4g{width:100%;border-collapse:collapse;font-size:13px}
+  table.map4g th,table.map4g td{border:1px solid var(--border);padding:7px 10px;text-align:left}
+  table.map4g th{background:var(--purple-bg);color:#4B3591}
+
+  footer{padding:20px;text-align:center;color:var(--faint);font-size:12px;font-family:var(--mono)}
+  .navbtns{display:flex;justify-content:space-between;margin-top:26px}
+  .teacher-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px}
+  .teacher-cell{background:var(--panel-2);border:1px solid var(--border-soft);border-radius:8px;padding:10px 12px}
+  .teacher-cell .n{font-family:var(--mono);font-size:20px;font-weight:700}
+  .teacher-cell .l{font-size:12px;color:var(--faint)}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">📡 5G SA 专网仿真工作台
+    <small>5G SA 专网方案设计 · 分步引导式仿真练习</small>
+  </div>
+  <div class="spacer"></div>
+  <button class="hbtn" id="btn4g">📚 5G↔4G 对应速查</button>
+  <button class="hbtn" id="btnTeacher">👩‍🏫 教师统计</button>
+</header>
+
+<div class="layout">
+  <nav class="steps" id="stepNav"></nav>
+  <main id="mainHost"></main>
+</div>
+
+<footer>5G SA 专网仿真工作台 v2.0 · 判定与仿真模型为教学演示用简化模型 · 厦门华厦学院 信息与智能机电学院</footer>
+
+<script>
+/* ============================================================
+   §1 数据层（继承旧版仿真配置器知识基线，并与教学 docx 对齐）
+   ============================================================ */
+const OPTIONS = {
+  deployMode:['独立专网','共享专网','公网切片'],
+  band:['n28','n41','n78','n79'],
+  frame:['2.5ms双周期','2.5ms单周期','5ms单周期'],
+  sst:['1(eMBB)','2(URLLC)','3(mMTC)','4(V2X)'],
+  qi:[1,2,3,4,5,6,7,8,9],
+  ambr:['1Gbps','2Gbps','4Gbps','10Gbps'],
+  upfLoc:['园区下沉','集中部署'],
+  upfSpec:['1G','5G','10G']
+};
+const SLOT_BY_FRAME = {
+  '2.5ms双周期':['10:2:2','9:3:2','8:4:2'],
+  '2.5ms单周期':['10:2:2','9:3:2','8:4:2'],
+  '5ms单周期':['6:4:4']
+};
+const QI_PDB = {1:100,2:150,3:50,4:300,5:100,6:300,7:100,8:300,9:300};
+const CAPACITY = {'1G':1000,'5G':5000,'10G':10000};
+const REDUNDANCY = 0.20;
+const PARAM_KEYS = ['deployMode','band','frame','slot','sst','qi','ambr','upfLoc','upfSpec'];
+const PARAM_LABELS = {
+  deployMode:'① 部署模式', band:'② 频段选择', frame:'③ 帧结构类型', slot:'④ 特殊时隙配比',
+  sst:'⑤ 切片类型(SST)', qi:'⑥ 5QI值', ambr:'⑦ UE-AMBR', upfLoc:'⑧ UPF部署位置', upfSpec:'⑨ UPF规格'
+};
+// 4G 对应关系提示（挂在参数卡上）
+const MAP4G_HINT = {
+  deployMode:'', band:'', frame:'', slot:'',
+  sst:'≈ 4G 的 APN（都是选网络的标识，切片更精细）',
+  qi:'≈ 4G 的 QCI（都是 QoS 等级数字，5QI 范围更大）',
+  ambr:'≈ 4G 的 APN-AMBR（5G 为 UE级+会话级两级）',
+  upfLoc:'UPF 可下沉 = 4G SGW-U/PGW-U 做不到的灵活部署',
+  upfSpec:''
+};
+const MAP4G_TABLE = [
+  ['SNSSAI（切片标识）','APN（接入点名称）','都是选择特定网络的标识','5G 切片更精细，可多切片共用一个 APN'],
+  ['5QI','QCI','都是标识 QoS 等级的数字','5QI 值范围更大，支持自定义'],
+  ['UE-AMBR','APN-AMBR','都限制用户聚合比特率','5G 是 UE级 + 会话级两级 AMBR'],
+  ['AMF','MME','都负责移动性管理','5G AMF 与 SMF 分离，拆分更细'],
+  ['SMF','SGW-C / PGW-C','都负责会话管理','SMF 是纯控制面，与 UPF 分离'],
+  ['UPF','SGW-U / PGW-U','都负责数据转发','UPF 可灵活下沉到网络边缘'],
+  ['UDM','HSS','都存储用户签约数据','UDM 增加了切片选择等功能'],
+  ['N2 接口','S1-AP 接口','基站与核心网控制面接口','接口名称和协议不同'],
+  ['N3 接口','S1-U 接口','基站与核心网用户面接口','接口名称和协议不同']
+];
+
+const SCENARIOS = [
+  { id:'coal', name:'智慧煤矿', icon:'⛏️', category:'urllc',
+    brief:'大型煤矿推进"无人化采掘"，需 5G SA 专网实现矿卡远程操控、井下环境实时监测、无人机自动巡检。井下覆盖是最大挑战。',
+    ind:{area:'10km² 矿区（含井下巷道）', dev:'200台矿卡(远程操控/视频回传)+100台巡检无人机+300个井下传感器', bw:'上行>200Mbps，下行>100Mbps', dl:'<30ms（设备控制指令）', rel:'99.999%', sp:'需支持井下覆盖（深度>500米），终端需具备防爆特性'},
+    coverage:'覆盖 10km²', delayThreshold:30, bandwidthReq:600,
+    correct:{deployMode:['独立专网'],band:['n28'],frame:['2.5ms双周期'],sst:['1(eMBB)'],qi:[3],ambr:['4Gbps'],upfLoc:['园区下沉']},
+    reason:{deployMode:'矿区安全等级高，数据不能出矿区，只有独立专网能满足物理隔离要求。',band:'矿区覆盖面积达10km²，n28 波长最长、覆盖最远；高频段覆盖半径不足以支撑露天矿坑。',frame:'矿卡视频回传是持续上行大流量业务，需要连续上行时隙，应选上行占比更高的 2.5ms 双周期。',sst:'主要业务是视频回传和传感器采集，属典型 eMBB 大带宽场景。',ambr:'矿卡多路视频回传，单用户需高速率，参考 4Gbps。'} },
+  { id:'factory', name:'智慧工厂', icon:'🏭', category:'urllc',
+    brief:'大型家电制造工厂建设 5G 全连接工厂，AGV 低时延调度，高清质检视频实时回传边缘平台做 AI 质检。',
+    ind:{area:'5万㎡ 钢结构厂房', dev:'200台AGV+30路高清视频监控+500个传感器+50台员工终端', bw:'上行>500Mbps（多路视频回传），下行>100Mbps', dl:'<20ms（AGV调度），<100ms（监控视频）', rel:'99.999%', sp:'数据不能出园区（数据安全合规）'},
+    coverage:'园区级覆盖', delayThreshold:20, bandwidthReq:720,
+    correct:{deployMode:['独立专网'],band:['n41','n78'],frame:['2.5ms双周期'],sst:['1(eMBB)'],qi:[3],ambr:['4Gbps'],upfLoc:['园区下沉']},
+    reason:{deployMode:'工厂产线数据不允许出园区，需要独立专网做物理隔离。',band:'园区范围适中但并发密度高，n41/n78 兼顾覆盖与容量；n28 容量不足，n79 覆盖太小。',frame:'以视频回传为主的上行业务模型，需要连续上行时隙，应选 2.5ms 双周期。',sst:'视频监控+员工上网属 eMBB；AGV 低时延由 5QI 单独保障，不改变 SST 大类。',ambr:'多路视频+AGV+传感器并发，参考 4Gbps。'} },
+  { id:'port', name:'智慧港口', icon:'🚢', category:'urllc',
+    brief:'大型集装箱港口升级自动化码头，岸桥司机移到中控室通过 5G 远程操控岸桥装卸，对时延和可靠性要求极高。',
+    ind:{area:'2km² 码头作业区', dev:'50台岸桥(远程操控)+100台无人集卡+100个设备传感器', bw:'上行>300Mbps，下行>200Mbps', dl:'<10ms（岸桥远程操控），<50ms（数据采集）', rel:'99.999%', sp:'沿海高湿盐雾环境，设备需防腐'},
+    coverage:'码头区域覆盖', delayThreshold:10, bandwidthReq:360,
+    correct:{deployMode:['独立专网'],band:['n78'],frame:['2.5ms双周期'],sst:['2(URLLC)'],qi:[3],ambr:['2Gbps'],upfLoc:['园区下沉']},
+    reason:{deployMode:'远程操控关系作业安全，必须独立专网保障可控性。',band:'岸桥视频回传需要大带宽，n78 在容量与覆盖间最均衡；n28 容量不足以支撑高清视频流。',frame:'岸桥视频回传+集卡调度均以上行为主，应选 2.5ms 双周期争取更多上行资源。',sst:'岸桥远程操控对时延极敏感（<10ms），属 URLLC 场景。',ambr:'单岸桥视频回传+控制指令，参考 2Gbps。'} },
+  { id:'campus', name:'智慧园区', icon:'🏢', category:'embb',
+    brief:'高新技术产业园区建设 5G SA 智慧园区，智能安防、环境监测、园区办公多业务统一承载。',
+    ind:{area:'1km² 科技园区', dev:'200路安防摄像头+500个环境传感器+200台员工终端+100个智能照明', bw:'下行>1Gbps（峰值），上行>100Mbps', dl:'<50ms', rel:'99.99%', sp:'混合业务并发（人+物同时接入），需差异化 QoS'},
+    coverage:'覆盖 1km²+', bandwidthReq:480,
+    correct:{deployMode:['共享专网','公网切片'],band:['n41'],frame:['2.5ms单周期','5ms单周期'],sst:['1(eMBB)'],qi:[6,9],ambr:['1Gbps','2Gbps'],upfLoc:['集中部署']},
+    reason:{deployMode:'安全要求中等，独立专网成本过高，共享专网或公网切片性价比更合适。',band:'覆盖面积和并发量中等，n41 在覆盖与容量间最均衡。',frame:'员工上网和监控回看都是下行为主的业务模型，应选下行占比更高的单周期帧结构。',sst:'上网、视频、传感器都是标准 eMBB 业务，无低时延强制要求。',ambr:'员工上网+传感器混合，参考 1Gbps 或 2Gbps。'} },
+  { id:'grid', name:'智慧电网', icon:'⚡', category:'urllc',
+    brief:'电网公司利用 5G SA 专网实现输电线路智能巡检和配网差动保护，无人机回传高清视频，差动保护指令需极低时延。',
+    ind:{area:'50km 输电线路（带状覆盖）', dev:'200台巡检无人机+300个输电线路传感器', bw:'上行>150Mbps，下行>50Mbps', dl:'<15ms（差动保护指令）', rel:'99.999%', sp:'狭长输电走廊（非面状覆盖），终端电池续航要求高'},
+    coverage:'50km 带状覆盖', delayThreshold:15, bandwidthReq:480,
+    correct:{deployMode:['独立专网'],band:['n28'],frame:['2.5ms双周期'],sst:['2(URLLC)'],qi:[3],ambr:['1Gbps','2Gbps'],upfLoc:['园区下沉']},
+    reason:{deployMode:'电网涉及国家关键基础设施，安全要求极高，必须独立专网。',band:'50km 狭长带状覆盖是关键约束，n28 覆盖半径最大，其余频段无法连续覆盖整条走廊。',frame:'无人机巡检视频回传是持续上行业务，应选 2.5ms 双周期获得更多上行时隙。',sst:'差动保护要求时延 <15ms，属 URLLC 场景。',ambr:'无人机视频+传感器，参考 1Gbps 或 2Gbps。'} },
+  { id:'hospital', name:'智慧医院', icon:'🏥', category:'urllc',
+    brief:'三甲医院建设智慧医院，远程手术机器人需医生通过 5G 远程操控，时延极苛刻；移动查房车跨楼宇漫游保持业务连续。',
+    ind:{area:'8万㎡ 院区（门诊楼+住院楼+手术楼）', dev:'50台移动查房车+50台远程手术机器人+200个医疗传感器', bw:'上行>400Mbps，下行>500Mbps', dl:'<10ms（远程手术操控）', rel:'99.999%', sp:'数据不出院区（患者隐私合规），需支持移动性'},
+    coverage:'院区覆盖', delayThreshold:10, bandwidthReq:2500,
+    correct:{deployMode:['独立专网'],band:['n78'],frame:['2.5ms双周期'],sst:['2(URLLC)'],qi:[3],ambr:['4Gbps'],upfLoc:['园区下沉']},
+    reason:{deployMode:'患者隐私数据不能出院区，必须独立专网。',band:'远程手术需大带宽承载多路高清视频，n78 带宽容量最大；n28 容量不足。',frame:'手术视频回传+查房车数据以上行为主，应选 2.5ms 双周期。',sst:'远程手术要求时延 <10ms，是最典型的 URLLC 场景。',ambr:'手术机器人多路高清视频+传感器，参考 4Gbps。'} },
+  { id:'airport', name:'智慧机场', icon:'✈️', category:'embb',
+    brief:'大型国际机场建设 5G SA 专网，同时满足地勤调度专网通信与航站楼旅客高速上网。',
+    ind:{area:'5km² 航站楼+停机坪', dev:'300台地勤终端+500个环境传感器+2000个旅客终端', bw:'上行>200Mbps，下行>800Mbps（旅客服务）', dl:'<30ms（地勤调度）', rel:'99.999%', sp:'高密度用户场景，需同时服务公众与专网'},
+    coverage:'覆盖 5km²', bandwidthReq:12800,
+    correct:{deployMode:['共享专网'],band:['n41','n78'],frame:['2.5ms单周期','5ms单周期'],sst:['1(eMBB)'],qi:[6,9],ambr:['2Gbps','4Gbps'],upfLoc:['集中部署']},
+    reason:{deployMode:'地勤与旅客业务安全等级不同但可共存，共享专网兼顾安全与成本。',band:'5km² 覆盖+高密度用户并发，n41/n78 兼顾覆盖与容量。',frame:'旅客上网是下行为主，应选单周期帧结构。',sst:'旅客上网+地勤调度都是标准 eMBB 业务。',ambr:'旅客终端+地勤终端，参考 2Gbps 或 4Gbps。'} },
+  { id:'mine', name:'智慧矿山', icon:'⛰️', category:'urllc',
+    brief:'大型露天铁矿智能化改造，重型矿卡通过 5G 实现远程驾驶和自动循迹，每台矿卡回传多路高清视频，上行带宽需求大。',
+    ind:{area:'15km² 露天矿坑', dev:'200台重型矿卡(多路视频回传)+300个环境/设备传感器', bw:'上行>250Mbps（多路视频回传），下行>150Mbps', dl:'<25ms（矿卡远程操控）', rel:'99.999%', sp:'广覆盖、大连接，矿区地形复杂（沟壑纵横）'},
+    coverage:'覆盖 15km²', delayThreshold:25, bandwidthReq:516,
+    correct:{deployMode:['独立专网'],band:['n28'],frame:['2.5ms双周期'],sst:['1(eMBB)'],qi:[3],ambr:['4Gbps'],upfLoc:['园区下沉']},
+    reason:{deployMode:'矿山安全要求高，数据不能出矿区，应选独立专网。',band:'15km² 露天矿坑覆盖范围大，n28 覆盖最远。',frame:'矿卡多路视频回传是持续上行业务，应选 2.5ms 双周期。',sst:'以视频回传和传感器数据为主，属 eMBB 大带宽场景。',ambr:'矿卡多路视频回传（前方+后方+驾驶室），参考 4Gbps。'} }
+];
+
+const BUSINESS_POOL = [
+  { id:'agv',      name:'AGV/机器人控制指令',  direction:'上行', unitMbps:0.5, note:'控制信令，小数据量' },
+  { id:'teleop',   name:'远程操控/自动驾驶指令', direction:'上行', unitMbps:2,   note:'控制指令+状态回传' },
+  { id:'cam1080',  name:'高清视频监控(1080P)', direction:'上行', unitMbps:15,  note:'单路摄像头→服务器' },
+  { id:'cam4k',    name:'超高清视频(4K)',      direction:'上行', unitMbps:40,  note:'单路高清摄像头' },
+  { id:'drone',    name:'无人机巡检视频',      direction:'上行', unitMbps:20,  note:'单路空中视频回传' },
+  { id:'sensor',   name:'传感器数据采集',      direction:'上行', unitMbps:0.1, note:'温湿度/振动等' },
+  { id:'truckcam', name:'矿卡视频回传(多路)',  direction:'上行', unitMbps:50,  note:'前方+后方+驾驶室多路' },
+  { id:'mobile',   name:'移动终端上网',        direction:'下行', unitMbps:10,  note:'员工手机/平板' },
+  { id:'pax',      name:'旅客移动终端上网',    direction:'下行', unitMbps:5,   note:'机场/园区旅客' }
+];
+
+/* ============================================================
+   §2 判定引擎（纯函数，继承旧版规则，一处出口）
+   ============================================================ */
+const ST = { UNSET:'unselected', PENDING:'pending', OK:'ok', BAD:'bad', WARN:'warn' };
+const isNum = v => v !== '' && v !== null && v !== undefined;
+
+function delayMetrics(sc, qi, loc){
+  const pdb = QI_PDB[Number(qi)];
+  const locDelay = loc === '园区下沉' ? 2 : 15;
+  const simDelay = Math.round(0.15 * pdb + locDelay);
+  return { qi:Number(qi), pdb, loc, locDelay, simDelay, threshold:sc.delayThreshold, pass: simDelay <= sc.delayThreshold };
+}
+function capacityMetrics(sc, spec){
+  const capacity = CAPACITY[spec];
+  const satisfaction = Math.round(capacity / sc.bandwidthReq * 100);
+  const occupancy = Math.round(sc.bandwidthReq / capacity * 100);
+  let status, text;
+  if(satisfaction >= 100){ status = ST.OK;
+    text = `容量满足度 ${satisfaction}%，规格「${spec}」（${capacity}Mbps）可承载场景带宽需求 ${sc.bandwidthReq}Mbps。`;
+  } else if(satisfaction >= 75 && spec === '10G'){ status = ST.WARN;
+    text = `已选最高规格「10G」（${capacity}Mbps），但场景理论需求达 ${sc.bandwidthReq}Mbps，满足度约 ${satisfaction}%。工程上可分区域部署第二套 UPF 分流——此项"有条件通过"，不扣分。`;
+  } else { status = ST.BAD;
+    text = `容量不足：场景需求 ${sc.bandwidthReq}Mbps，当前规格「${spec}」仅 ${capacity}Mbps（满足度 ${satisfaction}%），请提高规格档位。`;
+  }
+  return { spec, capacity, req:sc.bandwidthReq, satisfaction, occupancy, status, text };
+}
+function evSingleRule(sc, sel, k){
+  const v = sel[k];
+  const base = { key:k, value:v, correct:sc.correct[k] };
+  if(v === '' || v == null) return { ...base, status:ST.UNSET, text:'尚未选择。' };
+  const ok = sc.correct[k].includes(v);
+  const reason = sc.reason[k] || '参考值与该场景终端并发/速率量级匹配。';
+  return { ...base, status: ok?ST.OK:ST.BAD,
+    text: ok ? `✅ 判定正确 — ${reason}` : `❌ 判定错误 — 正确应为「${sc.correct[k].join(' / ')}」。${reason}` };
+}
+function evFrame(sc, sel){
+  const v = sel.frame;
+  if(!v) return { key:'frame', value:v, correct:sc.correct.frame, status:ST.UNSET, text:'尚未选择。' };
+  const ok = sc.correct.frame.includes(v);
+  return { key:'frame', value:v, correct:sc.correct.frame, status: ok?ST.OK:ST.BAD,
+    text: ok ? `✅ 判定正确 — ${sc.reason.frame}` : `❌ 判定错误 — 正确应为「${sc.correct.frame.join(' / ')}」。${sc.reason.frame}` };
+}
+function evSlot(sc, sel){
+  const {frame, slot} = sel;
+  if(!frame) return { key:'slot', value:slot, status: slot?ST.PENDING:ST.UNSET, text:'需先选择③帧结构类型。' };
+  if(!slot) return { key:'slot', value:slot, status:ST.PENDING, text:'⏳ 待选择 — 请先确定③帧结构，再选时隙配比。' };
+  const legal = (SLOT_BY_FRAME[frame]||[]).includes(slot);
+  return { key:'slot', value:slot, status: legal?ST.OK:ST.BAD,
+    text: legal ? `✅ 与帧结构「${frame}」联动匹配（合法组合：${SLOT_BY_FRAME[frame].join(' / ')}）。`
+                : `❌ 时隙配比「${slot}」与帧结构「${frame}」不配套，合法取值为 ${SLOT_BY_FRAME[frame].join(' / ')}。` };
+}
+// URLLC：⑥+⑧ 联合时延仿真（升级版：错误时明确诊断责任归属）
+function evJointDelay(sc, sel){
+  const qi = sel.qi, loc = sel.upfLoc;
+  if(!isNum(qi) || !loc){
+    const mk = (key, v, half) => ({ key, value:v, status: isNum(v)&&v!==''?ST.PENDING:ST.UNSET,
+      text: (isNum(v)&&v!=='') ? half : '尚未选择。' });
+    return { qi: mk('qi', qi, '⏳ 待判定 · 需配合⑧UPF部署位置'),
+             upfLoc: mk('upfLoc', loc, '⏳ 待判定 · 需配合⑥5QI值') };
+  }
+  const m = delayMetrics(sc, qi, loc);
+  // 反事实诊断：固定对方，换最优值看能否通过 —— 告诉学生问题出在哪半边
+  const qiFixPass  = delayMetrics(sc, 3, loc).pass;   // 若换成最优 5QI=3 能否过
+  const locFixPass = delayMetrics(sc, qi, '园区下沉').pass; // 若换成下沉能否过
+  let diag;
+  if(m.pass) diag = `仿真时延 ${m.simDelay}ms ≤ 阈值 ${m.threshold}ms，满足要求。`;
+  else if(!qiFixPass && locFixPass) diag = `问题主要在 ⑥5QI：即使 UPF 保持「${loc}」，只要 5QI 预算降到 50ms（5QI=3）即可达标；当前 5QI=${m.qi} 的标准预算 ${m.pdb}ms 过高。`;
+  else if(qiFixPass && !locFixPass) diag = `问题主要在 ⑧部署位置：当前 5QI=${m.qi} 的预算本身可行，但「集中部署」引入 15ms 回传时延导致超标，改为「园区下沉」（约 2ms）即可达标。`;
+  else diag = `⑥与⑧都有问题：5QI=${m.qi} 预算 ${m.pdb}ms 过高，且「${loc}」回传时延也偏大，需同时改为 5QI=3 + 园区下沉。`;
+  return {
+    qi: { key:'qi', value:qi, status: m.pass?ST.OK:ST.BAD, metric:m,
+      text: (m.pass?'✅ ':'❌ ') + diag + `（5QI=${m.qi} 标准时延预算 ${m.pdb}ms）` },
+    upfLoc: { key:'upfLoc', value:loc, status: m.pass?ST.OK:ST.BAD, metric:m,
+      text: (m.pass?'✅ ':'❌ ') + `部署位置对总时延贡献 ${m.locDelay}ms。` + diag }
+  };
+}
+function evQiRule(sc, sel){
+  const v = sel.qi;
+  if(!isNum(v)) return { key:'qi', value:v, correct:sc.correct.qi, status:ST.UNSET, text:'尚未选择。' };
+  const ok = sc.correct.qi.includes(Number(v));
+  return { key:'qi', value:v, correct:sc.correct.qi, status: ok?ST.OK:ST.BAD,
+    text: ok ? '✅ 判定正确 — 下行缓冲/浏览类业务对时延不敏感，5QI=6 或 9 即可。'
+             : `❌ 判定错误 — 正确应为 5QI=${sc.correct.qi.join('或')}。该场景对时延不敏感，选 URLLC 级低时延 5QI 会浪费调度资源。` };
+}
+function evUpfLocRule(sc, sel){
+  const v = sel.upfLoc;
+  if(!v) return { key:'upfLoc', value:v, correct:sc.correct.upfLoc, status:ST.UNSET, text:'尚未选择。' };
+  const ok = sc.correct.upfLoc.includes(v);
+  return { key:'upfLoc', value:v, correct:sc.correct.upfLoc, status: ok?ST.OK:ST.BAD,
+    text: ok ? '✅ 判定正确 — 时延不敏感，可集中部署降低建设与运维成本。'
+             : `❌ 判定错误 — 正确应为「${sc.correct.upfLoc.join('/')}」。该场景无需下沉边缘，集中部署性价比更高。` };
+}
+function evUpfSpec(sc, sel){
+  const v = sel.upfSpec;
+  if(!v) return { key:'upfSpec', value:v, status:ST.UNSET, text:'尚未选择。' };
+  const m = capacityMetrics(sc, v);
+  return { key:'upfSpec', value:v, status:m.status, text:(m.status===ST.OK?'✅ ':m.status===ST.WARN?'⚠️ ':'❌ ')+m.text, metric:m };
+}
+function evaluateAll(sc, sel){
+  const params = {};
+  params.deployMode = evSingleRule(sc, sel, 'deployMode');
+  params.band = evSingleRule(sc, sel, 'band');
+  params.frame = evFrame(sc, sel);
+  params.slot = evSlot(sc, sel);
+  params.sst = evSingleRule(sc, sel, 'sst');
+  if(sc.category === 'urllc'){
+    const j = evJointDelay(sc, sel);
+    params.qi = j.qi; params.upfLoc = j.upfLoc;
+  } else {
+    params.qi = evQiRule(sc, sel);
+    params.upfLoc = evUpfLocRule(sc, sel);
+  }
+  params.ambr = evSingleRule(sc, sel, 'ambr');
+  params.upfSpec = evUpfSpec(sc, sel);
+  const metrics = {
+    delay: (sc.category==='urllc' && isNum(sel.qi) && sel.upfLoc) ? delayMetrics(sc, sel.qi, sel.upfLoc) : null,
+    capacity: sel.upfSpec ? capacityMetrics(sc, sel.upfSpec) : null
+  };
+  const done = PARAM_KEYS.filter(k => params[k].status === ST.OK).length;
+  const allChosen = PARAM_KEYS.every(k => isNum(sel[k]));
+  return { params, metrics, done, allChosen, total:PARAM_KEYS.length };
+}
+
+/* ============================================================
+   §3 应用状态
+   ============================================================ */
+const app = {
+  scenario: null,
+  sel: {},              // 学生选择
+  think: {},            // 思考前置的回答 {param: {choice, right}}
+  calcRows: [],         // 带宽计算器
+  snapshot: null,       // 正式评测快照 {result, live, attempt}
+  attempts: 0,
+  step: 0,
+  maxStep: 0
+};
+
+// 教师统计（localStorage 持久化）
+const TKEY = 'sa5g_teacher_stats';
+function loadStats(){ try{ return JSON.parse(localStorage.getItem(TKEY)) || {}; }catch(e){ return {}; } }
+function saveStats(s){ localStorage.setItem(TKEY, JSON.stringify(s)); }
+function recordStats(scId, result){
+  const all = loadStats();
+  const rec = all[scId] || { total:0, wrong:{} };
+  rec.total++;
+  PARAM_KEYS.forEach(k => {
+    if(result.params[k].status !== ST.OK) rec.wrong[k] = (rec.wrong[k]||0)+1;
+  });
+  all[scId] = rec; saveStats(all);
+}
+
+/* ============================================================
+   §4 步骤定义与渲染骨架
+   ============================================================ */
+const STEPS = [
+  { name:'场景与需求', desc:'认领场景，划出 5 项指标' },
+  { name:'带宽估算', desc:'业务累加 +20% 冗余' },
+  { name:'网络架构', desc:'① 部署模式 + 拓扑认知' },
+  { name:'空口配置', desc:'② 频段 ③ 帧结构 ④ 时隙' },
+  { name:'核心网配置', desc:'⑤ 切片 ⑥ 5QI ⑦ AMBR ⑧ UPF位置' },
+  { name:'容量与规格', desc:'⑨ UPF 规格定档' },
+  { name:'提交评测', desc:'诊断报告 + 导出成果' }
+];
+
+const main = document.getElementById('mainHost');
+const navEl = document.getElementById('stepNav');
+
+function renderNav(){
+  navEl.innerHTML = STEPS.map((s, i) => {
+    const locked = !app.scenario && i > 0;
+    const cls = ['step-item', i===app.step?'active':'', locked?'locked':'', stepDone(i)?'done':''].join(' ');
+    return `<div class="${cls}" data-step="${i}">
+      <div class="step-num">${stepDone(i) && i!==app.step ? '✓' : i+1}</div>
+      <div><div class="step-name">${s.name}</div><div class="step-desc">${s.desc}</div></div>
+    </div>`;
+  }).join('');
+  navEl.querySelectorAll('.step-item').forEach(el => {
+    el.addEventListener('click', () => {
+      const i = Number(el.dataset.step);
+      if(!app.scenario && i > 0) return;
+      app.step = i; render();
+    });
+  });
+}
+function stepDone(i){
+  if(i === 0) return !!app.scenario;
+  if(i === 1) return app.calcRows.some(r => r.bizId && Number(r.qty) > 0);
+  const groups = {2:['deployMode'], 3:['band','frame','slot'], 4:['sst','qi','ambr','upfLoc'], 5:['upfSpec']};
+  if(groups[i]) return groups[i].every(k => isNum(app.sel[k]));
+  return false;
+}
+
+function render(keepScroll){
+  renderNav();
+  const pages = [pageScenario, pageCalc, pageArch, pageRadio, pageCore, pageSpec, pageResult];
+  const y = window.scrollY;
+  main.innerHTML = '';
+  const div = document.createElement('div');
+  div.className = 'step-page show';
+  div.innerHTML = pages[app.step]();
+  main.appendChild(div);
+  bindPage(app.step, div);
+  if(keepScroll) window.scrollTo(0, y);
+  else window.scrollTo({top:0, behavior:'smooth'});
+  saveProgress();
+}
+
+/* 进度持久化：刷新不丢失（按场景隔离） */
+const PKEY = 'sa5g_progress';
+function saveProgress(){
+  if(!app.scenario) return;
+  try{
+    localStorage.setItem(PKEY, JSON.stringify({
+      scenarioId: app.scenario.id, sel: app.sel, think: app.think,
+      calcRows: app.calcRows, calcSeq, attempts: app.attempts, step: app.step
+    }));
+  }catch(e){}
+}
+function loadProgress(){
+  try{
+    const p = JSON.parse(localStorage.getItem(PKEY));
+    if(!p) return;
+    const sc = SCENARIOS.find(s => s.id === p.scenarioId);
+    if(!sc) return;
+    app.scenario = sc; app.sel = p.sel || {}; app.think = p.think || {};
+    app.calcRows = p.calcRows || []; calcSeq = p.calcSeq || 0;
+    app.attempts = p.attempts || 0; app.step = p.step || 0;
+  }catch(e){}
+}
+function navBtns(prevOk = true, nextLabel = '下一步 →', nextOk = true){
+  return `<div class="navbtns">
+    <button class="btn ghost" id="prevBtn" ${app.step===0?'disabled':''}>← 上一步</button>
+    <button class="btn" id="nextBtn" ${nextOk?'':'disabled'}>${nextLabel}</button>
+  </div>`;
+}
+
+/* ---------- 步骤 1：场景与需求 ---------- */
+function pageScenario(){
+  return `
+    <h2 class="page-title">第 1 步 · 认领你们的场景</h2>
+    <p class="page-sub">8 组对应 8 个行业场景。点击卡片认领后，先读任务书，把 5 项核心指标看清楚——后面所有设计决策都由它们推导出来。</p>
+    <div class="scn-grid">
+      ${SCENARIOS.map(s => `
+        <div class="scn-card ${app.scenario && app.scenario.id===s.id?'active':''}" data-id="${s.id}">
+          <span class="ic">${s.icon}</span>
+          <span class="cat">${s.category==='urllc'?'低时延型 · URLLC':'大容量型 · eMBB'}</span>
+          <div class="nm">${s.name}</div>
+          <div class="bf">${s.coverage} · 带宽需求 ≈${s.bandwidthReq}Mbps${s.delayThreshold?` · 时延<${s.delayThreshold}ms`:' · 时延不敏感'}</div>
+        </div>`).join('')}
+    </div>
+    <div id="scnDetail">${app.scenario ? scenarioDetailHtml(app.scenario) : ''}</div>
+    ${navBtns(false, '确认场景，开始带宽估算 →', !!app.scenario)}
+  `;
+}
+function scenarioDetailHtml(sc){
+  return `
+    <div class="card" style="margin-top:18px">
+      <h3>${sc.icon} ${sc.name} · 场景需求说明书</h3>
+      <p style="color:var(--muted);font-size:13.5px;margin-top:0">${sc.brief}</p>
+      <table class="req">
+        <tr><th>覆盖面积</th><td>${sc.ind.area}</td></tr>
+        <tr><th>终端/业务</th><td>${sc.ind.dev}</td></tr>
+        <tr><th>带宽要求</th><td>${sc.ind.bw}</td></tr>
+        <tr><th>时延要求</th><td>${sc.ind.dl}</td></tr>
+        <tr><th>可靠性</th><td>${sc.ind.rel}</td></tr>
+        <tr><th>特殊需求</th><td>${sc.ind.sp}</td></tr>
+      </table>
+      <div style="margin-top:12px">
+        <span class="tag">判定方式：${sc.category==='urllc'?'仿真计算时延':'仿真计算容量裕度'}</span>
+        <span class="tag">场景带宽基线 ≈ ${sc.bandwidthReq} Mbps（用于⑨UPF规格判定）</span>
+      </div>
+    </div>
+    <div class="hint">💡 <b>设计顺序提示：</b>先别急着选参数。下一步先用带宽计算器估算本场景总带宽——它决定你后面 ⑨UPF 规格的选择依据。</div>`;
+}
+
+/* ---------- 步骤 2：带宽估算 ---------- */
+function pageCalc(){
+  return `
+    <h2 class="page-title">第 2 步 · 带宽估算</h2>
+    <p class="page-sub">从业务资源池中挑出本场景会用到的业务，填并发数量，算出总带宽。这是中立算术工具，不计分——但算错会导致后面 ⑨UPF 规格选错。</p>
+    <div class="hint">📖 <b>计算方法：</b>逐业务：单路带宽 × 并发数量 = 小计；全部累加后 <b>×1.2（加 20% 冗余）</b>，再向上取整到标准档位（1G / 5G / 10G）。</div>
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <h3 style="margin:0">🧮 带宽估算计算器</h3>
+        <button class="btn ghost" id="addRow">＋ 添加业务</button>
+      </div>
+      <div id="calcRows"></div>
+      <div class="calc-sum-bar">
+        <span>合计带宽：<b id="calcTotal">0 Mbps</b></span>
+        <span>×1.2 冗余后：<b id="calcFinal" style="color:var(--blue)">0 Mbps</b></span>
+        <span>建议 UPF 档位：<b id="calcTier" style="color:var(--ok)">—</b></span>
+      </div>
+      <div class="suggest" id="calcSuggest"></div>
+    </div>
+    ${navBtns()}
+  `;
+}
+function tierOf(mbps){ return mbps <= 1000 ? '1G' : mbps <= 5000 ? '5G' : mbps <= 10000 ? '10G' : '超出10G（需分流）'; }
+
+/* ---------- 步骤 3：网络架构（①部署模式 + 拓扑） ---------- */
+function pageArch(){
+  return `
+    <h2 class="page-title">第 3 步 · 网络架构设计</h2>
+    <p class="page-sub">架构选型是方案的第一决策：数据能不能出园区？预算和安全怎么权衡？先回答下面的问题，再选部署模式。</p>
+    ${thinkHtml('deployMode', '先想一想：本场景的数据安全和隔离要求，允许业务数据离开园区/矿区吗？', [
+      ['绝不允许，需物理隔离','yes'],
+      ['要求较高但可与运营商共享核心网','mid'],
+      ['要求一般，成本优先','no']
+    ], ans => ({
+      yes:'判断正确 → 应选「独立专网」。',
+      mid:'有道理 → 「共享专网」（无线独享+核心网共享）正为此设计。',
+      no:'成本敏感场景 → 「公网切片」更合适。请确认本场景是否真属于此类。'
+    }[ans]))}
+    <div class="pgrid">${paramCardHtml('deployMode')}</div>
+    <div class="card" style="margin-top:18px">
+      <h3>🗺️ 5G SA 专网拓扑 · 参数生效位置</h3>
+      <p style="font-size:12.5px;color:var(--muted);margin:0 0 8px">上层控制面（AMF/SMF/UDM），下层用户面（UE→gNB→UPF→DN）。你选的每个参数都会点亮拓扑上对应的网元。</p>
+      <div class="topo-wrap" id="topoHost"></div>
+    </div>
+    ${navBtns()}
+  `;
+}
+
+/* ---------- 步骤 4：空口配置 ---------- */
+function pageRadio(){
+  return `
+    <h2 class="page-title">第 4 步 · 空口配置</h2>
+    <p class="page-sub">无线侧三要素：频段决定覆盖与容量的基本面，帧结构/时隙配比决定上下行资源分配。</p>
+    ${thinkHtml('band', '先想一想：本场景是"覆盖优先"还是"容量优先"？', [
+      ['覆盖优先（面积大/带状/井下）','cover'],
+      ['容量优先（高密度/大带宽）','cap'],
+      ['两者均衡','bal']
+    ], ans => ({
+      cover:'覆盖优先 → 低频段 n28 是主力候选。',
+      cap:'容量优先 → 看向 n78/n79 大带宽频段。',
+      bal:'均衡 → n41 往往是最稳的选择。对照场景指标再确认一次。'
+    }[ans]))}
+    <div class="pgrid">${paramCardHtml('band')}</div>
+    ${thinkHtml('frame', '先想一想：本场景的业务以"上行"还是"下行"为主？（回看第 1 步需求里的带宽要求）', [
+      ['上行为主（视频回传/采集类）','up'],
+      ['下行为主（上网/分发类）','down']
+    ], ans => ({
+      up:'上行为主 → 应选上行时隙更多的「2.5ms 双周期」帧结构。',
+      down:'下行为主 → 应选下行占比更高的「单周期」帧结构。'
+    }[ans]))}
+    <div class="pgrid">${paramCardHtml('frame')}${paramCardHtml('slot')}</div>
+    ${navBtns()}
+  `;
+}
+
+/* ---------- 步骤 5：核心网配置 ---------- */
+function pageCore(){
+  const sc = app.scenario;
+  return `
+    <h2 class="page-title">第 5 步 · 核心网配置</h2>
+    <p class="page-sub">切片、QoS、签约速率与 UPF 部署位置。注意卡片右上角的紫色标注——它标出了每个 5G 参数在 4G 网络中的对应概念，可以帮助你贯通两代移动通信的知识。</p>
+    ${sc.category==='urllc' ? `
+    ${thinkHtml('sst', '先想一想：本场景最关键的那类业务（远控/保护/手术），时延要求属于哪个等级？', [
+      ['≤20ms 级，必须超可靠低时延','urllc'],
+      ['100ms 级，大带宽即可','embb']
+    ], ans => ({
+      urllc:'正确 → 切片应选 SST=2(URLLC)，5QI 也要配套选低时延等级。',
+      embb:'再想想 — 回看需求里的时延指标。如果关键业务时延 <20ms，应按 URLLC 对待。'
+    }[ans]))}` : `
+    <div class="hint">💡 本场景为 eMBB 大容量型：时延不敏感，5QI 选缓冲/浏览类（6 或 9），UPF 集中部署降成本即可。</div>`}
+    <div class="pgrid">
+      ${paramCardHtml('sst')}${paramCardHtml('qi')}${paramCardHtml('ambr')}${paramCardHtml('upfLoc')}
+    </div>
+    ${navBtns()}
+  `;
+}
+
+/* ---------- 步骤 6：容量与规格 ---------- */
+function pageSpec(){
+  const calcTotal = calcFinal();
+  return `
+    <h2 class="page-title">第 6 步 · ⑨ UPF 规格定档</h2>
+    <p class="page-sub">规格必须扛住场景带宽需求。你在第 2 步算出的冗余后带宽是 <b style="font-family:var(--mono)">${calcTotal > 0 ? calcTotal + ' Mbps（建议档位 ' + tierOf(calcTotal) + '）' : '（尚未计算 — 可回第 2 步用计算器估算）'}</b>。</p>
+    <div class="hint">🧮 <b>仿真判定：</b>满足度 = 规格容量 ÷ 场景带宽基线（${app.scenario ? app.scenario.bandwidthReq : '—'}Mbps）。≥100% 合格；不足则判容量不足。规格容量：1G=1000Mbps，5G=5000Mbps，10G=10000Mbps。</div>
+    <div class="pgrid">${paramCardHtml('upfSpec')}</div>
+    ${navBtns(true, '全部就绪，去提交评测 →', allFilled())}
+  `;
+}
+
+/* ---------- 步骤 7：提交评测 ---------- */
+function pageResult(){
+  const sc = app.scenario;
+  let html = `
+    <h2 class="page-title">第 7 步 · 提交仿真评测</h2>
+    <p class="page-sub">提交后逐项判定并锁定答对项；答错项会给出错因诊断，可直接回到对应步骤修正后重新提交。</p>
+    <div class="card" style="text-align:center;padding:26px">
+      <button class="btn ok" id="submitBtn" style="font-size:16px;padding:13px 44px" ${allFilled()?'':'disabled'}>
+        ${app.snapshot ? '重新提交仿真' : '🚀 提交仿真评测'}
+      </button>
+      <div style="margin-top:10px;font-size:12.5px;color:var(--faint)">
+        ${allFilled() ? '9 项参数已全部选择，可以提交' : '还有参数未选择，无法提交'}
+        ${app.snapshot && !app.snapshot.live ? ' · ⚠️ 提交后你又修改了参数，结果已过期，需重新提交' : ''}
+      </div>
+    </div>
+    <div id="resultArea">${app.snapshot ? resultHtml(app.snapshot, sc) : ''}</div>`;
+  return html;
+}
+function allFilled(){ return PARAM_KEYS.every(k => isNum(app.sel[k])); }
+
+function resultHtml(snap, sc){
+  const r = snap.result;
+  const score = Math.round(r.done / r.total * 100);
+  const nonOk = PARAM_KEYS.filter(k => r.params[k].status !== ST.OK);
+  const onlyWarn = nonOk.length > 0 && nonOk.every(k => r.params[k].status === ST.WARN);
+  const color = onlyWarn || score >= 60 ? (score >= 90 || onlyWarn ? 'var(--ok)' : 'var(--warn)') : 'var(--bad)';
+  const m = r.metrics;
+  return `
+    <div class="card score-hero">
+      <div class="ring" style="border-color:${color};color:${color}">${onlyWarn ? '有条件<br>通过' : score}</div>
+      <div style="flex:1;min-width:240px">
+        <h3 style="margin:0 0 4px">${sc.icon} ${sc.name} · 方案评估（第 ${snap.attempt} 次提交）</h3>
+        <p style="margin:0;color:var(--muted);font-size:13.5px">${onlyWarn
+          ? `9 项参数判定全部正确；其中 ${nonOk.length} 项受候选值上限限制为"有条件通过"，不计扣分。`
+          : `9 项参数中 <b>${r.done}</b> 项判定正确。${nonOk.length ? '错误项诊断见下，可回对应步骤修正。' : '全部通过，🎉 方案达标！'}`}</p>
+      </div>
+      <button class="btn ghost" id="exportBtn">📄 导出结果（Markdown）</button>
+    </div>
+    <div class="card">
+      <h3>🗺️ 方案拓扑总览</h3>
+      <p style="font-size:12.5px;color:var(--muted);margin:0 0 8px">你的全部参数选择及其在网络中的生效位置，各网元按本次判定结果着色（绿=合格，红=不合格，黄=有条件通过）。</p>
+      <div class="topo-wrap" id="topoHost"></div>
+    </div>
+    ${(m.delay || m.capacity) ? `
+    <div class="card"><h3>📊 仿真仪表</h3>
+      ${m.delay ? `<div style="font-size:13.5px">仿真时延：<b style="font-family:var(--mono);color:${m.delay.pass?'var(--ok)':'var(--bad)'}">${m.delay.simDelay} ms</b>（阈值 <${m.delay.threshold}ms）</div>
+        <div class="gauge"><div style="width:${Math.min(100, Math.round(m.delay.simDelay/m.delay.threshold*100))}%;background:${m.delay.pass?'var(--ok)':'var(--bad)'}"></div></div>` : ''}
+      ${m.capacity ? `<div style="font-size:13.5px;margin-top:8px">容量满足度：<b style="font-family:var(--mono);color:${m.capacity.status===ST.OK?'var(--ok)':m.capacity.status===ST.WARN?'var(--warn)':'var(--bad)'}">${m.capacity.satisfaction}%</b>（${m.capacity.capacity}Mbps / 需求 ${m.capacity.req}Mbps）</div>
+        <div class="gauge"><div style="width:${Math.min(100, m.capacity.satisfaction)}%;background:${m.capacity.status===ST.OK?'var(--ok)':m.capacity.status===ST.WARN?'var(--warn)':'var(--bad)'}"></div></div>` : ''}
+    </div>` : ''}
+    <div class="card"><h3>🩺 逐项诊断报告</h3>
+      ${PARAM_KEYS.map(k => {
+        const p = r.params[k];
+        const cls = p.status===ST.OK?'ok':p.status===ST.WARN?'warn':p.status===ST.BAD?'bad':'';
+        return `<div class="diag ${cls}"><div class="dt">${PARAM_LABELS[k]}：${p.value ?? '未选'}</div><div>${p.text}</div></div>`;
+      }).join('')}
+    </div>
+    <div class="card"><h3>📚 5G↔4G 参数对应关系</h3>
+      <table class="map4g">
+        <tr><th>5G SA 参数</th><th>4G LTE 对应</th><th>功能相似性</th><th>关键区别</th></tr>
+        ${MAP4G_TABLE.map(r2 => `<tr>${r2.map(c => `<td>${c}</td>`).join('')}</tr>`).join('')}
+      </table>
+    </div>`;
+}
+
+/* ============================================================
+   §5 组件：参数卡片 + 思考前置 + 拓扑图
+   ============================================================ */
+function paramCardHtml(key){
+  const isSlot = key === 'slot';
+  const opts = isSlot ? (SLOT_BY_FRAME[app.sel.frame] || []) : OPTIONS[key];
+  const cur = app.sel[key] ?? '';
+  const hint4g = MAP4G_HINT[key] ? `<span class="badge4g">4G↔ ${MAP4G_HINT[key]}</span>` : '';
+  return `
+    <div class="pcard" id="pcard-${key}">
+      <label>${PARAM_LABELS[key]}${hint4g}</label>
+      <select id="sel-${key}" ${isSlot && !app.sel.frame ? 'disabled' : ''}>
+        <option value="">${isSlot ? (app.sel.frame ? '请选择…' : '先选择③帧结构') : '请选择…'}</option>
+        ${opts.map(o => `<option value="${o}" ${String(o)===String(cur)?'selected':''}>${o}</option>`).join('')}
+      </select>
+      <div class="status" id="status-${key}"></div>
+    </div>`;
+}
+const THINK_ANSWERS = {}; // key -> 记录
+function thinkHtml(key, q, choices, verdictFn){
+  THINK_ANSWERS[key] = { q, choices, verdictFn };
+  return `
+    <div class="think" data-think="${key}">
+      <div class="tq">🤔 ${q}</div>
+      ${choices.map(([label, val]) => `<label><input type="radio" name="think-${key}" value="${val}"> ${label}</label>`).join('')}
+      <div class="verdict" id="verdict-${key}"></div>
+    </div>`;
+}
+
+/* 拓扑 SVG（浅色重绘，布局继承旧版 3GPP SA 结构） */
+function topoSvg(){
+  const node = (id, key, x, y, w, label) => `
+    <g id="tn-${id}" class="tnode" data-key="${key||''}">
+      <rect class="tn-anno" x="${x}" y="${y}" width="${w}" height="42" rx="6"/>
+      <text class="tn-name" x="${x+8}" y="${y+17}">${label}</text>
+      <text class="tn-val" x="${x+8}" y="${y+33}">未选</text>
+      <text class="tn-state" x="${x+w-8}" y="${y+17}" text-anchor="end"></text>
+    </g>`;
+  return `
+  <svg viewBox="0 0 1120 540" role="img" aria-label="5G SA 专网拓扑">
+    <defs><marker id="arw" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#B8C6D4"/></marker></defs>
+    <rect id="topo-boundary" class="boundary" x="14" y="14" width="1092" height="460" rx="14"/>
+    <text class="tn-plane" x="32" y="44">控制面 · Control Plane</text>
+    <text class="tn-plane" x="32" y="244">用户面 · User Plane</text>
+    <g class="topo-conn">
+      <path d="M190,320 H250" marker-end="url(#arw)"/>
+      <path d="M470,320 H590" marker-end="url(#arw)"/>
+      <path d="M810,320 H920" marker-end="url(#arw)"/>
+      <path d="M360,240 V115 H410" marker-end="url(#arw)"/>
+      <path d="M570,115 H630" marker-end="url(#arw)"/>
+      <path d="M790,115 H850" marker-end="url(#arw)"/>
+      <path d="M710,165 V245" marker-end="url(#arw)"/>
+    </g>
+    <g><rect class="tn-box" x="410" y="60" width="160" height="105" rx="8"/>
+      <text class="tn-title" x="422" y="84">AMF</text><text class="tn-sub" x="422" y="100">接入与移动性管理</text>
+      ${node('sst','sst',418,112,144,'⑤ 切片SST')}</g>
+    <g><rect class="tn-box" x="630" y="60" width="160" height="105" rx="8"/>
+      <text class="tn-title" x="642" y="84">SMF</text><text class="tn-sub" x="642" y="100">会话管理功能</text>
+      ${node('qi','qi',638,112,144,'⑥ 5QI')}</g>
+    <g><rect class="tn-box" x="850" y="60" width="160" height="105" rx="8"/>
+      <text class="tn-title" x="862" y="84">UDM</text><text class="tn-sub" x="862" y="100">统一数据管理</text>
+      ${node('ambr','ambr',858,112,144,'⑦ UE-AMBR')}</g>
+    <g><rect class="tn-box" x="40" y="270" width="150" height="100" rx="8"/>
+      <text class="tn-title" x="52" y="306">UE / 终端</text>
+      <text class="tn-sub" x="52" y="328">行业终端·AGV·无人机</text>
+      <text class="tn-sub" x="52" y="344">视频监控·传感器</text></g>
+    <g><rect class="tn-box" x="250" y="245" width="220" height="150" rx="10"/>
+      <text class="tn-title" x="264" y="270">接入网 · gNB (RAN)</text>
+      ${node('band','band',260,280,200,'② 频段')}
+      ${node('frame','frame',260,330,200,'③ 帧结构 / ④时隙')}</g>
+    <g><rect class="tn-box" x="590" y="245" width="220" height="150" rx="10"/>
+      <text class="tn-title" x="604" y="270">用户面功能 · UPF</text>
+      ${node('upfLoc','upfLoc',600,280,200,'⑧ UPF部署位置')}
+      ${node('upfSpec','upfSpec',600,330,200,'⑨ UPF规格')}</g>
+    <g><rect class="tn-box" x="920" y="270" width="160" height="100" rx="8"/>
+      <text class="tn-title" x="934" y="306">外部数据网 · DN</text>
+      <text class="tn-sub" x="934" y="328">园区/企业私有数据中心</text>
+      <text class="tn-sub" x="934" y="344">公网 Internet / 工业云</text></g>
+    <g id="tn-deployMode" class="tnode" data-key="deployMode">
+      <rect class="tn-anno" x="250" y="488" width="620" height="38" rx="8"/>
+      <text class="tn-name" x="560" y="512" text-anchor="middle" id="dmText">① 部署模式：未选择</text>
+    </g>
+  </svg>`;
+}
+function paintTopo(){
+  const host = document.getElementById('topoHost');
+  if(!host || !app.scenario) return;
+  if(!host.querySelector('svg')) host.innerHTML = topoSvg();
+  const r = evaluateAll(app.scenario, app.sel);
+  const snap = app.snapshot && app.snapshot.live ? app.snapshot.result : null;
+  ['sst','qi','ambr','band','frame','upfLoc','upfSpec'].forEach(k => {
+    const g = host.querySelector('#tn-' + k);
+    if(!g) return;
+    const src = snap ? snap.params[k] : r.params[k];
+    const st = snap ? src.status : (isNum(app.sel[k]) ? 'pending' : 'unselected');
+    g.setAttribute('class', 'tnode st-' + (st==='pending' ? '' : st));
+    g.querySelector('.tn-val').textContent = k === 'frame'
+      ? `${app.sel.frame || '未选'}${app.sel.slot ? ' / ' + app.sel.slot : ''}`
+      : (app.sel[k] || '未选');
+    g.querySelector('.tn-state').textContent = snap
+      ? (src.status===ST.OK?'✔ 合格':src.status===ST.WARN?'⚠ 有条件':src.status===ST.BAD?'✘ 不合格':'')
+      : '';
+  });
+  const dm = host.querySelector('#dmText');
+  if(dm) dm.textContent = `① 部署模式：${app.sel.deployMode || '未选择'}`;
+  const bd = host.querySelector('#topo-boundary');
+  if(bd) bd.setAttribute('class', 'boundary' + (app.sel.deployMode ? ' st-ok' : ''));
+}
+
+/* ============================================================
+   §6 页面绑定逻辑
+   ============================================================ */
+function markStale(){ if(app.snapshot) app.snapshot.live = false; }
+
+function bindPage(step, root){
+  // 通用：底部翻页
+  const prev = root.querySelector('#prevBtn'), next = root.querySelector('#nextBtn');
+  if(prev) prev.addEventListener('click', () => { if(app.step>0){ app.step--; render(); } });
+  if(next) next.addEventListener('click', () => { if(app.step<STEPS.length-1){ app.step++; render(); } });
+
+  if(step === 0){
+    root.querySelectorAll('.scn-card').forEach(c => c.addEventListener('click', () => {
+      const sc = SCENARIOS.find(s => s.id === c.dataset.id);
+      if(!app.scenario || app.scenario.id !== sc.id){
+        app.scenario = sc; app.sel = {}; app.think = {}; app.calcRows = [];
+        app.snapshot = null; app.attempts = 0;
+      }
+      render();
+    }));
+  }
+  if(step === 1) bindCalc(root);
+  if([2,3,4,5].includes(step)) bindParams(root, step);
+  if(step === 6) bindResult(root);
+}
+
+/* 思考前置绑定 */
+function bindThinks(root){
+  root.querySelectorAll('.think').forEach(el => {
+    const key = el.dataset.think;
+    // 恢复之前已答的思考题状态（参数变化触发页面重绘时不丢失）
+    const saved = app.think[key];
+    if(saved){
+      const t = THINK_ANSWERS[key];
+      const radio = el.querySelector(`input[value="${saved}"]`);
+      if(radio) radio.checked = true;
+      const v0 = el.querySelector('.verdict');
+      v0.style.display = 'block'; v0.className = 'verdict right';
+      v0.textContent = '💡 ' + t.verdictFn(saved);
+    }
+    el.querySelectorAll('input[type=radio]').forEach(radio => {
+      radio.addEventListener('change', () => {
+        const t = THINK_ANSWERS[key];
+        app.think[key] = radio.value;
+        const v = el.querySelector('.verdict');
+        v.style.display = 'block';
+        v.className = 'verdict right';
+        v.textContent = '💡 ' + t.verdictFn(radio.value);
+      });
+    });
+  });
+}
+
+/* 参数卡绑定 */
+function bindParams(root, step){
+  if(step === 2){ const h = root.querySelector('#topoHost'); if(h){ h.innerHTML = topoSvg(); paintTopo(); } }
+  bindThinks(root);
+  const keys = {2:['deployMode'], 3:['band','frame','slot'], 4:['sst','qi','ambr','upfLoc'], 5:['upfSpec']}[step] || [];
+  keys.forEach(key => {
+    const sel = root.querySelector('#sel-' + key);
+    if(!sel) return;
+    sel.addEventListener('change', () => {
+      app.sel[key] = sel.value;
+      if(key === 'frame'){
+        const legal = SLOT_BY_FRAME[sel.value] || [];
+        if(app.sel.slot && !legal.includes(app.sel.slot)) app.sel.slot = '';
+      }
+      markStale();
+      render(true);
+    });
+  });
+  paintSnapshotOnCards(root, keys);
+}
+function paintSnapshotOnCards(root, keys){
+  const snap = app.snapshot;
+  keys.forEach(key => {
+    const card = root.querySelector('#pcard-' + key);
+    const stEl = root.querySelector('#status-' + key);
+    const sel = root.querySelector('#sel-' + key);
+    if(!card || !stEl) return;
+    if(snap && snap.live){
+      const p = snap.result.params[key];
+      card.classList.add('st-' + p.status);
+      stEl.innerHTML = p.text;
+      if(p.status === ST.OK){ sel.disabled = true; }
+      else {
+        const b = document.createElement('button');
+        b.className = 'retry'; b.textContent = '重新选择此项 →';
+        b.addEventListener('click', () => { markStale(); render(true); });
+        stEl.appendChild(b);
+      }
+    }
+  });
+}
+
+/* 带宽计算器 */
+let calcSeq = 0;
+function calcFinal(){
+  const total = app.calcRows.reduce((a, r) => {
+    const b = BUSINESS_POOL.find(x => x.id === r.bizId);
+    return a + (b ? b.unitMbps * (Number(r.qty)||0) : 0);
+  }, 0);
+  return +(total * (1 + REDUNDANCY)).toFixed(2);
+}
+function bindCalc(root){
+  const host = root.querySelector('#calcRows');
+  function paint(){
+    if(!app.calcRows.length){
+      host.innerHTML = `<div style="padding:18px;color:var(--faint);font-size:13px;text-align:center">还没有业务行 — 点击「＋ 添加业务」，挑出本场景会用到的业务并填并发数量。</div>`;
+    } else {
+      host.innerHTML = `<div class="calc-row head"><div>业务类型</div><div>方向</div><div>单路带宽</div><div>数量</div><div>小计(Mbps)</div><div></div></div>` +
+        app.calcRows.map(r => {
+          const b = BUSINESS_POOL.find(x => x.id === r.bizId);
+          const used = new Set(app.calcRows.map(x => x.bizId).filter(Boolean));
+          return `<div class="calc-row" data-row="${r.rowId}">
+            <select class="c-biz">
+              <option value="">请选择业务类型…</option>
+              ${BUSINESS_POOL.map(x => `<option value="${x.id}" ${x.id===r.bizId?'selected':''} ${x.id!==r.bizId && used.has(x.id)?'disabled':''}>${x.name}</option>`).join('')}
+            </select>
+            <div>${b?b.direction:'—'}</div>
+            <div style="font-family:var(--mono)">${b?b.unitMbps+' Mbps':'—'}</div>
+            <input type="number" class="c-qty" min="0" step="1" placeholder="数量" value="${r.qty}">
+            <div style="font-family:var(--mono)">${b ? (b.unitMbps*(Number(r.qty)||0)).toFixed(1) : '—'}</div>
+            <button class="c-del" title="删除">✕</button>
+          </div>`;
+        }).join('');
+    }
+    const total = app.calcRows.reduce((a, r) => {
+      const b = BUSINESS_POOL.find(x => x.id === r.bizId);
+      return a + (b ? b.unitMbps*(Number(r.qty)||0) : 0);
+    }, 0);
+    const fin = +(total * 1.2).toFixed(2);
+    root.querySelector('#calcTotal').textContent = total.toFixed(1) + ' Mbps';
+    root.querySelector('#calcFinal').textContent = fin + ' Mbps';
+    root.querySelector('#calcTier').textContent = fin > 0 ? tierOf(fin) : '—';
+    const sg = root.querySelector('#calcSuggest');
+    if(fin > 0 && app.scenario){
+      sg.classList.add('show');
+      sg.innerHTML = `📌 记住这个数字：<b>${fin} Mbps</b>，第 6 步选 ⑨UPF 规格时要用。` +
+        (fin > app.scenario.bandwidthReq * 1.5 ? ' ⚠️ 注意：你的估算明显高于场景基线，检查一下是否多算了业务或数量。' : '');
+    } else sg.classList.remove('show');
+  }
+  root.querySelector('#addRow').addEventListener('click', () => {
+    app.calcRows.push({ rowId:++calcSeq, bizId:'', qty:'' }); paint();
+  });
+  host.addEventListener('change', e => {
+    const rowEl = e.target.closest('.calc-row'); if(!rowEl) return;
+    const r = app.calcRows.find(x => x.rowId === Number(rowEl.dataset.row));
+    if(e.target.classList.contains('c-biz')) r.bizId = e.target.value;
+    if(e.target.classList.contains('c-qty')) r.qty = Math.max(0, Math.floor(Number(e.target.value)||0));
+    paint();
+  });
+  host.addEventListener('click', e => {
+    if(!e.target.classList.contains('c-del')) return;
+    const rowEl = e.target.closest('.calc-row');
+    app.calcRows = app.calcRows.filter(x => x.rowId !== Number(rowEl.dataset.row));
+    paint();
+  });
+  paint();
+}
+
+/* 提交与结果 */
+function bindResult(root){
+  const th = root.querySelector('#topoHost');
+  if(th){ th.innerHTML = topoSvg(); paintTopo(); }
+  root.querySelector('#submitBtn').addEventListener('click', () => {
+    if(!allFilled()) return;
+    app.attempts++;
+    app.snapshot = { result: evaluateAll(app.scenario, app.sel), live:true, attempt:app.attempts, at:new Date() };
+    recordStats(app.scenario.id, app.snapshot.result);
+    render();
+  });
+  const ex = root.querySelector('#exportBtn');
+  if(ex) ex.addEventListener('click', exportMarkdown);
+}
+
+/* 导出 Markdown */
+function exportMarkdown(){
+  const sc = app.scenario, snap = app.snapshot;
+  if(!snap) return;
+  const r = snap.result;
+  const lines = [];
+  lines.push(`# ${sc.name} 5G SA 专网仿真评测结果`, '');
+  lines.push(`- 提交次数：第 ${snap.attempt} 次 · 时间：${snap.at.toLocaleString('zh-CN')}`);
+  lines.push(`- 总分：${r.done}/${r.total} 项合格`, '');
+  lines.push(`## 参数配置与判定`, '');
+  lines.push(`| 参数 | 本组取值 | 判定 | 说明 |`, `|---|---|---|---|`);
+  PARAM_KEYS.forEach(k => {
+    const p = r.params[k];
+    const st = p.status===ST.OK?'✅合格':p.status===ST.WARN?'⚠️有条件通过':p.status===ST.BAD?'❌不合格':'未判定';
+    lines.push(`| ${PARAM_LABELS[k]} | ${p.value ?? '—'} | ${st} | ${p.text.replace(/\|/g,'/')} |`);
+  });
+  if(r.metrics.delay) lines.push('', `## 时延仿真`, `仿真时延 ${r.metrics.delay.simDelay}ms（阈值 <${r.metrics.delay.threshold}ms），${r.metrics.delay.pass?'满足':'不满足'}要求。`);
+  if(r.metrics.capacity) lines.push('', `## 容量仿真`, `UPF 规格 ${r.metrics.capacity.spec}（${r.metrics.capacity.capacity}Mbps），场景需求 ${r.metrics.capacity.req}Mbps，满足度 ${r.metrics.capacity.satisfaction}%。`);
+  lines.push('', `## 5G↔4G 对应关系`, '', `| 5G SA | 4G LTE | 相似性 | 区别 |`, `|---|---|---|---|`);
+  MAP4G_TABLE.forEach(row => lines.push(`| ${row.join(' | ')} |`));
+  const blob = new Blob([lines.join('\n')], { type:'text/markdown;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `${sc.name}_5GSA仿真评测结果.md`;
+  a.click(); URL.revokeObjectURL(a.href);
+}
+
+/* ============================================================
+   §7 顶栏弹层：4G 速查 + 教师统计
+   ============================================================ */
+function modal(html){
+  const ov = document.createElement('div');
+  ov.style.cssText = 'position:fixed;inset:0;background:rgba(20,30,45,.4);z-index:100;display:flex;align-items:center;justify-content:center;padding:24px';
+  ov.innerHTML = `<div style="background:#fff;border-radius:14px;max-width:860px;width:100%;max-height:84vh;overflow:auto;padding:24px 28px">
+    <div style="text-align:right"><button class="hbtn" id="mClose">关闭 ✕</button></div>${html}</div>`;
+  ov.addEventListener('click', e => { if(e.target === ov || e.target.id === 'mClose') ov.remove(); });
+  document.body.appendChild(ov);
+}
+document.getElementById('btn4g').addEventListener('click', () => {
+  modal(`<h3 style="margin-top:0">📚 5G ↔ 4G 参数对应关系速查表</h3>
+    <table class="map4g"><tr><th>5G SA 参数</th><th>4G LTE 对应</th><th>功能相似性</th><th>关键区别</th></tr>
+    ${MAP4G_TABLE.map(r => `<tr>${r.map(c => `<td>${c}</td>`).join('')}</tr>`).join('')}</table>
+    <p style="font-size:12.5px;color:var(--muted)">理解 5G 与 4G 参数的对应关系，有助于把已学的 4G 知识迁移到 5G 专网设计中。</p>`);
+});
+document.getElementById('btnTeacher').addEventListener('click', () => {
+  const all = loadStats();
+  const cells = [];
+  Object.entries(all).forEach(([scId, rec]) => {
+    const sc = SCENARIOS.find(s => s.id === scId);
+    PARAM_KEYS.forEach(k => {
+      const w = rec.wrong[k] || 0;
+      if(rec.total > 0) cells.push({ sc: sc ? sc.name : scId, k, rate: Math.round(w/rec.total*100), w, t: rec.total });
+    });
+  });
+  modal(`<h3 style="margin-top:0">👩‍🏫 教师统计（本机累计，按参数错误率）</h3>
+    ${cells.length ? `<div class="teacher-grid">${cells.map(c => `
+      <div class="teacher-cell"><div class="n" style="color:${c.rate>50?'var(--bad)':c.rate>20?'var(--warn)':'var(--ok)'}">${c.rate}%</div>
+      <div class="l">${c.sc} · ${PARAM_LABELS[c.k]}（错 ${c.w}/${c.t} 次）</div></div>`).join('')}</div>
+      <button class="hbtn" id="clearStats" style="margin-top:14px">🗑 清空统计</button>`
+    : '<p style="color:var(--muted)">还没有提交记录。学生提交评测后，这里按参数累计错误率。</p>'}`);
+  const cs = document.getElementById('clearStats');
+  if(cs) cs.addEventListener('click', () => { localStorage.removeItem(TKEY); document.querySelector('.hbtn#mClose')?.click(); });
+});
+
+/* 启动 */
+loadProgress();
+render();
+</script>
+<script type="text/javascript">
+(function initCxRobot(retries){
+  if(typeof CxRobotSdkJs !== 'undefined' && CxRobotSdkJs && CxRobotSdkJs.init){
+    CxRobotSdkJs.init("https://robot.chaoxing.com/embedChat?unitId=1454&robotId=a40732f8196740809de85a58cd40cc5b&groupId=0&openType=auto&openPage=coze", "2c1421b74d1607f1695476e356c5a85c");
+    console.log('[数智人] SDK 初始化成功');
+  } else if(retries > 0){
+    console.warn('[数智人] SDK 尚未就绪，1 秒后重试（剩余 ' + retries + ' 次）…');
+    setTimeout(function(){ initCxRobot(retries - 1); }, 1000);
+  } else {
+    console.error('[数智人] SDK 加载失败。请检查：1) 网络能否访问 robot.chaoxing.com（系统代理是否可用）；2) 是否被广告拦截插件屏蔽；3) 是否以 http(s) 方式打开页面。页面主体功能不受影响。');
+  }
+})(5);
+</script>
+</body>
+</html>

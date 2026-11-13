@@ -1,0 +1,1595 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>5G SA 专网仿真工作台</title>
+<link rel="icon" type="image/png" href="data:image/png;base64,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">
+<script type="text/javascript" src="https://robot.chaoxing.com/sdk/CxRobotSdkJs.js"></script>
+<style>
+  :root{
+    --bg:#F2F5F2; --panel:#FFFFFF; --panel-2:#F6F8F6; --paper:#FCFDFB;
+    --border:#CFDAD6; --border-soft:#E3EAE6;
+    --text:#15363B; --muted:#4B6267; --faint:#5F7073;
+    --primary:#006D72; --primary-hover:#005B60; --primary-bg:#E2F2EF; --primary-line:#8EC8C4;
+    --accent:#B95118; --accent-bright:#D57835; --accent-bg:#FBEEE4;
+    --info:#315F9D; --info-bg:#EAF0F8;
+    --ok:#21724C; --ok-bg:#E7F3EB; --warn:#8A5A06; --warn-bg:#FBF1DA; --bad:#B63B32; --bad-bg:#FBEAE7;
+    --disabled:#D7DFDC; --focus:#B95118; --shadow-pop:0 12px 32px rgba(21,54,59,.12);
+    /* 纸面网格（关掉背景纹理：把下面两个变量都改成 transparent 即可） */
+    --bg-rule:rgba(0,109,114,.055); --bg-rule-fine:rgba(0,109,114,.022);
+    --blue:var(--primary); --blue-bg:var(--primary-bg); --purple:var(--info); --purple-bg:var(--info-bg);
+    --mono:"Cascadia Mono","Cascadia Code","SFMono-Regular",Consolas,"Liberation Mono",monospace;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{background-color:var(--bg);
+    background-image:
+      linear-gradient(to right,var(--bg-rule) 1px,transparent 1px),
+      linear-gradient(to bottom,var(--bg-rule) 1px,transparent 1px),
+      linear-gradient(to right,var(--bg-rule-fine) 1px,transparent 1px),
+      linear-gradient(to bottom,var(--bg-rule-fine) 1px,transparent 1px);
+    background-size:160px 160px,160px 160px,32px 32px,32px 32px;
+    color:var(--text);font-family:"Segoe UI","Microsoft YaHei UI","Microsoft YaHei","PingFang SC","Noto Sans CJK SC",system-ui,sans-serif;font-size:14px;line-height:1.65}
+  button,input,select{font:inherit}
+  button{touch-action:manipulation}
+  button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--focus);outline-offset:3px}
+  .sr-only{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+
+  /* 顶栏：三段硬切频谱带 + 纯 CSS 信号标识 */
+  header{min-height:84px;background:var(--panel);border-bottom:1px solid var(--border);padding:3px 28px 0;display:flex;align-items:center;gap:18px;position:sticky;top:0;z-index:50}
+  header::before{content:"";position:absolute;inset:0 0 auto;height:3px;background:linear-gradient(90deg,var(--primary) 0 62%,var(--accent) 62% 74%,var(--info) 74% 100%)}
+  header .logo{display:flex;align-items:center;gap:14px;font-size:22px;line-height:30px;font-weight:700}
+  header .logo small{display:block;font-size:13px;line-height:20px;color:var(--muted);font-weight:400}
+  .seal{width:46px;height:46px;flex:0 0 auto;display:block;-webkit-user-drag:none;user-select:none}
+  header .spacer{flex:1}
+  .hbtn{min-height:40px;background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:8px 16px;font-size:13.5px;color:var(--muted);cursor:pointer;transition:background 160ms ease-out,border-color 160ms ease-out,color 160ms ease-out}
+  .hbtn:hover{border-color:var(--primary);color:var(--primary);background:var(--primary-bg)}
+
+  .layout{display:grid;grid-template-columns:280px minmax(0,1fr);min-height:calc(100vh - 84px)}
+  nav.steps{background:var(--panel);border-right:1px solid var(--border);padding:20px 14px;position:sticky;top:84px;align-self:start;height:calc(100vh - 84px);overflow:auto}
+  .step-item{position:relative;display:flex;gap:12px;width:100%;padding:10px 10px 10px 14px;border:1px solid transparent;border-radius:8px;margin:0 0 8px;background:transparent;color:var(--text);text-align:left;cursor:pointer;align-items:flex-start;min-height:64px;transition:background 160ms ease-out}
+  .step-item:not(:first-child)::before{content:"";position:absolute;left:29px;top:-9px;width:2px;height:10px;background:var(--border)}
+  .step-item.done::before{background:var(--primary)}
+  .step-item:hover{background:var(--panel-2)}
+  .step-item.active{background:var(--primary-bg);box-shadow:inset 3px 0 var(--primary)}
+  .step-item.locked{cursor:not-allowed;color:var(--muted)}
+  .step-num{position:relative;flex:0 0 30px;width:30px;height:30px;border-radius:6px;background:var(--panel-2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:12.5px;font-weight:700;font-variant-numeric:tabular-nums;color:var(--muted)}
+  .step-item.active .step-num{background:var(--primary);color:#fff;border-color:var(--primary)}
+  .step-item.active .step-num::after{content:"";position:absolute;right:-5px;top:-4px;width:6px;height:6px;border-radius:50%;background:var(--accent);animation:signalPulse 1.8s ease-in-out infinite}
+  .step-item.done:not(.active) .step-num{background:var(--ok);color:#fff;border-color:var(--ok)}
+  .step-item.done.active .step-name::after{content:"✓";color:var(--ok);margin-left:8px;font-weight:700}
+  .step-item.locked .step-num{border-style:dashed;background:var(--panel);color:var(--muted)}
+  .step-name{font-size:14px;line-height:20px;font-weight:700}
+  .step-desc,.step-state{display:block;font-size:12.5px;line-height:20px;color:var(--muted);margin-top:2px}
+  .step-state.stale{color:var(--warn)}
+  @keyframes signalPulse{0%,100%{opacity:.45;transform:scale(.85)}50%{opacity:1;transform:scale(1.25)}}
+
+  main{padding:28px 32px 88px;min-width:0}
+  .step-page{display:none;max-width:1240px;animation:pageIn 180ms ease-out}
+  .step-page.show{display:block}
+  @keyframes pageIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+  .page-title{font-size:26px;line-height:34px;font-weight:700;margin:0 0 4px;outline:none}
+  .page-sub{color:var(--muted);font-size:14px;line-height:23px;margin:0 0 12px}
+  .step-goal{display:flex;justify-content:space-between;gap:16px;align-items:center;background:var(--paper);border:1px solid var(--border-soft);border-left:3px solid var(--primary);border-radius:8px;padding:10px 14px;margin:0 0 20px;font-size:14px}
+  .goal-progress{flex:0 0 auto;color:var(--primary);font-family:var(--mono);font-weight:700;font-variant-numeric:tabular-nums}
+  .card{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:20px 22px;margin-bottom:20px}
+  .card h3{margin:0 0 12px;font-size:16px;line-height:24px;font-weight:700}
+  .card h3::before{content:"";display:inline-block;width:12px;height:3px;background:var(--primary);margin:0 8px 4px 0}
+  .hint{background:var(--info-bg);border:1px solid #C9D7E8;border-radius:10px;padding:12px 16px;font-size:14px;color:var(--text);margin-bottom:20px}
+  .hint b{color:var(--info)}
+  .hint.warning{background:var(--warn-bg);border-color:#E6CE9C;color:var(--text)}
+  .empty-state{padding:20px;border:1px dashed var(--border);border-radius:10px;background:var(--paper);color:var(--muted);text-align:center}
+
+  /* 场景卡片 */
+  .scn-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(236px,1fr));gap:16px}
+  .scn-card{position:relative;border:1px solid var(--border);border-top:3px solid var(--primary);border-radius:12px;padding:16px;cursor:pointer;background:var(--panel);transition:transform 160ms ease-out,border-color 160ms ease-out,box-shadow 160ms ease-out}
+  .scn-card.urllc{border-top-color:var(--accent)}.scn-card.embb{border-top-color:var(--primary)}
+  .scn-card:hover{border-color:var(--primary);transform:translateY(-2px);box-shadow:0 6px 16px rgba(21,54,59,.08)}
+  .scn-card.active{border:2px solid var(--primary);border-top-width:3px;background:var(--primary-bg);padding:15px}
+  .scn-card.active.urllc{border-top-color:var(--accent)}
+  .scn-card .ic{width:36px;height:36px;display:inline-flex;align-items:center;justify-content:center;background:var(--panel-2);border:1px solid var(--border-soft);border-radius:6px;font-size:20px;margin-bottom:8px}
+  .scn-card .nm{font-size:16px;line-height:24px;font-weight:700;margin:4px 0 2px}
+  .scn-card .cat{font-size:12.5px;padding:2px 8px;border-radius:4px;background:var(--primary-bg);color:var(--primary);display:inline-block;margin-bottom:6px}
+  .scn-card.urllc .cat{background:var(--accent-bg);color:var(--accent)}
+  .scn-card .bf{font-size:12.5px;line-height:20px;color:var(--muted);font-variant-numeric:tabular-nums}
+  .claim{display:none;position:absolute;right:12px;top:12px;color:var(--primary);font-size:12.5px;font-weight:700}
+  .scn-card.active .claim{display:block}
+
+  /* 表格与滚动区 */
+  .table-scroll,.calc-scroll{overflow-x:auto;max-width:100%}
+  .scroll-hint{display:none;color:var(--muted);font-size:12.5px;margin:6px 0 0;text-align:right}
+  .scroll-hint.show{display:block}
+  table.req,table.map4g{width:100%;border-collapse:collapse;font-size:14px;line-height:23px}
+  table.req th,table.req td,table.map4g th,table.map4g td{border:0;border-bottom:1px solid var(--border-soft);padding:10px 12px;text-align:left;vertical-align:top;min-height:42px}
+  table.req th{background:var(--panel-2);width:140px;color:var(--muted);font-weight:600}
+  table.req tr:first-child th{border-top:2px solid var(--primary)}
+  table.map4g th{background:#EDF3F0;border-bottom:2px solid var(--primary);color:var(--text);font-weight:700}
+  table.map4g th:first-child{color:var(--primary)}table.map4g th:nth-child(2){color:var(--info)}
+  .tag{display:inline-block;font-size:12.5px;font-family:var(--mono);background:var(--panel-2);border:1px solid var(--border-soft);border-radius:4px;padding:2px 8px;color:var(--muted);margin:2px 4px 2px 0}
+
+  /* 表单与按钮 */
+  select,input[type=number]{width:100%;min-height:42px;background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:8px 10px;font-size:14px;line-height:20px;font-weight:600;color:var(--text)}
+  select:hover,input[type=number]:hover{border-color:var(--primary)}
+  select:focus,input:focus{border-color:var(--primary);outline:3px solid rgba(0,109,114,.16);outline-offset:1px}
+  select:disabled{background:#F0F3F1;color:var(--muted);opacity:1;cursor:not-allowed}
+  .btn{min-height:40px;background:var(--primary);color:#fff;border:1px solid var(--primary);border-radius:6px;padding:8px 18px;font-size:14px;line-height:20px;font-weight:600;cursor:pointer;transition:background 160ms ease-out,border-color 160ms ease-out}
+  .btn:hover{background:var(--primary-hover);border-color:var(--primary-hover)}
+  .btn.ok{background:var(--primary)}
+  .btn.ghost{background:var(--panel);color:var(--primary);border:1px solid var(--primary)}
+  .btn.ghost:hover{background:var(--primary-bg)}
+  .btn:disabled{background:#E5EAE8;border-color:#E5EAE8;color:#72817E;cursor:not-allowed}
+  .navbtns{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:28px}
+  .nav-next{display:flex;align-items:center;gap:12px}.nav-reason{font-size:12.5px;color:var(--warn)}
+
+  /* 带宽计算器 */
+  .calc-note{font-size:12.5px;color:var(--muted);margin:0 0 8px}
+  .calc-row{display:grid;grid-template-columns:minmax(210px,1.6fr) .65fr .8fr .85fr .85fr 36px;gap:10px;align-items:center;min-height:52px;padding:6px 0;border-bottom:1px dashed var(--border-soft);font-size:14px}
+  .calc-row.head{min-height:40px;font-size:12.5px;color:var(--muted);font-weight:600;border-bottom:1px solid var(--border)}
+  .calc-row .num{text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums}
+  .calc-row .c-qty{text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums}
+  .c-del{width:32px;height:32px;background:none;border:1px solid transparent;border-radius:5px;color:var(--bad);cursor:pointer}
+  .c-del:hover{background:var(--bad-bg);border-color:var(--bad)}
+  .qty-cell{position:relative}.qty-error{display:block;color:var(--bad);font-size:12.5px;line-height:18px;text-align:left;margin-top:2px}
+  .calc-row.has-error{align-items:start;padding:8px 0}
+  .calc-sum-bar{display:flex;gap:28px;margin-top:16px;padding:16px 18px;background:#EDF4F1;border-top:1px solid var(--border);border-bottom:1px solid var(--border);border-radius:8px;font-size:14px;flex-wrap:wrap}
+  .calc-sum-bar b{font-family:var(--mono);font-size:17px;font-variant-numeric:tabular-nums}
+  .calc-sum-bar .redundant{color:var(--primary);font-size:22px;line-height:26px;border-bottom:2px solid var(--accent)}
+  .tier-tag{background:var(--panel);border:1px solid var(--primary);border-radius:4px;padding:0 6px;color:var(--primary)!important}
+  .suggest{margin-top:12px;font-size:14px;padding:10px 14px;border-radius:8px;background:var(--primary-bg);border:1px solid var(--primary-line);color:var(--text);display:none}
+  .suggest.show{display:block}.suggest.warn{background:var(--warn-bg);border-color:#E6CE9C}
+  .baseline-compare{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:16px;padding:12px 14px;background:var(--paper);border:1px solid var(--border-soft);border-radius:8px}
+  .baseline-compare b{font-family:var(--mono);font-variant-numeric:tabular-nums;color:var(--primary)}
+  .baseline-note{font-size:12.5px;color:var(--muted);margin:6px 0 0}
+  .undo-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:12px;padding:8px 12px;background:var(--info-bg);border-radius:6px;color:var(--text)}
+
+  /* 思考前置 */
+  fieldset.think{position:relative;min-inline-size:0;border:1px solid #EBC8AF;border-left:4px solid var(--accent);background:var(--accent-bg);border-radius:10px;padding:32px 16px 12px;margin:0 0 16px;font-size:14px}
+  fieldset.think::before{content:"THINK · 先判据，后参数";position:absolute;left:16px;top:8px;font-family:var(--mono);font-size:12.5px;letter-spacing:.06em;color:var(--accent)}
+  .think-meta{position:absolute;right:16px;top:8px;color:var(--accent);font-size:12.5px}
+  .think .tq{font-weight:700;margin:0 0 8px;padding:0;color:var(--text)}
+  .think label{display:inline-flex;align-items:center;gap:8px;min-height:36px;margin:0 16px 0 0;padding:4px 8px;border-radius:5px;cursor:pointer;color:var(--text)}
+  .think label:hover{background:rgba(185,81,24,.07)}
+  .think input[type=radio]{width:18px;height:18px;margin:0;accent-color:var(--accent);flex:0 0 auto}
+  .think .verdict{margin-top:8px;padding-top:8px;border-top:1px dashed #DDB896;font-size:14px;color:var(--accent);display:none}
+  .think-next{margin-top:10px;color:var(--accent);font-size:12.5px;font-weight:600}
+
+  /* 参数卡五态 */
+  .pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
+  .pcard{border:1px solid var(--border);border-left:3px solid var(--border);border-radius:10px;padding:16px;background:var(--panel)}
+  .pcard>label{display:block;font-size:14px;font-weight:700;color:var(--muted);margin-bottom:8px}
+  .pcard .status{display:block;margin-top:12px;padding:10px 10px 0;border-top:1px dashed var(--border);font-size:14px;line-height:1.65;background:transparent}
+  .status-title{font-weight:700;color:var(--muted);margin-bottom:3px}.status-body{color:var(--text)}
+  .pcard.st-pending{border-left-color:var(--info)}.pcard.st-pending .status-title{color:var(--info)}
+  .pcard.st-ok{border-left-color:var(--ok)}.pcard.st-ok .status{background:var(--ok-bg);padding:10px}.pcard.st-ok .status-title{color:var(--ok)}
+  .pcard.st-bad{border-left-color:var(--bad)}.pcard.st-bad .status{background:var(--bad-bg);padding:10px}.pcard.st-bad .status-title{color:var(--bad)}
+  .pcard.st-warn{border-left-color:var(--warn)}.pcard.st-warn .status{background:var(--warn-bg);padding:10px}.pcard.st-warn .status-title{color:var(--warn)}
+  .retry{display:inline-flex;align-items:center;min-height:32px;margin-top:6px;font-size:12.5px;color:var(--primary);background:none;border:none;cursor:pointer;text-decoration:underline;padding:0}
+  .badge4g{display:block;font-size:12.5px;line-height:20px;background:var(--info-bg);color:var(--info);border-radius:4px;padding:5px 8px;margin:0 0 10px;font-weight:400;white-space:normal}
+
+  /* 拓扑工程图 · 横轴为物理距离 */
+  .topo-wrap{overflow-x:auto;background-color:var(--paper);background-image:repeating-linear-gradient(0deg,var(--bg-rule-fine) 0 1px,transparent 1px 32px),repeating-linear-gradient(90deg,var(--bg-rule-fine) 0 1px,transparent 1px 32px);border:1px solid var(--border-soft);border-radius:8px}
+  .topo-wrap svg{width:100%;min-width:900px;height:auto;display:block}
+  .topo-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin:0 0 12px}
+  .topo-head h3{margin:0}
+  .topo-zoom{flex:none;min-height:30px;padding:4px 12px;font-size:12px;line-height:18px}
+  .topo-wrap:fullscreen{padding:20px;display:flex;align-items:center;border-radius:0}
+  .topo-wrap:fullscreen svg{min-width:0;max-height:calc(100vh - 40px)}
+  .topo-wrap.zoom-fallback{position:fixed;inset:12px;z-index:1200;overflow:auto;box-shadow:0 10px 44px rgba(0,40,42,.28)}
+  .topo-wrap.zoom-fallback svg{min-width:0}
+  .plane-label{font-size:11px;fill:var(--muted);font-family:var(--mono);letter-spacing:.08em}
+  .dev-box{fill:#fff;stroke:#A9BCB9;stroke-width:1.3}
+  .dev-box.ghost{fill:#FBFCFB;stroke:#C6D4D1;stroke-dasharray:5 4}
+  .dev-title{font-size:14.5px;font-weight:700;fill:var(--text)}
+  .dev-sub{font-size:11px;fill:var(--muted)}
+  .dev-hint{font-size:11px;fill:var(--primary);font-family:var(--mono)}
+  .link-up{fill:none;stroke:var(--primary);stroke-width:2.2;stroke-linecap:round}
+  .link-up.overload{stroke:var(--bad);stroke-dasharray:3 5}
+  .link-cp{fill:none;stroke:var(--info);stroke-width:1.5;stroke-dasharray:5 5;opacity:.8}
+  .fence{fill:none;stroke:var(--primary);stroke-width:1.8;stroke-dasharray:9 6;transition:width 340ms cubic-bezier(.35,0,.2,1),stroke 200ms ease-out,stroke-dasharray 200ms}
+  .fence.solid{stroke-dasharray:none;fill:url(#hatch)}
+  .fence.weak{stroke:#A9BCB9;stroke-width:1.4;stroke-dasharray:3 5}
+  .tn-card{fill:#fff;stroke:var(--border);stroke-width:1;transition:fill 200ms ease-out,stroke 200ms ease-out}
+  .tn-bar{transition:fill 200ms ease-out}
+  .tn-name{font-size:11.5px;fill:var(--muted)}
+  .tn-val{font-size:12px;fill:var(--text);font-family:var(--mono);font-variant-numeric:tabular-nums}
+  .tn-state{font-size:11px;fill:var(--muted)}
+  .st-ok .tn-card{fill:var(--ok-bg);stroke:var(--ok)}.st-ok .tn-bar{fill:var(--ok)}.st-ok .tn-state{fill:var(--ok)}
+  .st-bad .tn-card{fill:var(--bad-bg);stroke:var(--bad)}.st-bad .tn-bar{fill:var(--bad)}.st-bad .tn-state{fill:var(--bad)}
+  .st-warn .tn-card{fill:var(--warn-bg);stroke:var(--warn)}.st-warn .tn-bar{fill:var(--warn)}.st-warn .tn-state{fill:var(--warn)}
+  .st-pending .tn-card{fill:var(--info-bg);stroke:var(--info)}.st-pending .tn-bar{fill:var(--info)}.st-pending .tn-state{fill:var(--info)}
+  .tnode{cursor:pointer}
+  .tnode:hover .tn-card,.tnode:focus-visible .tn-card{stroke-width:2}
+  .tnode:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+  .tnode.reveal{animation:nodeReveal 420ms ease-out both}
+  @keyframes nodeReveal{from{opacity:.15}to{opacity:1}}
+  #dmBand{transition:fill 200ms ease-out,stroke 200ms ease-out}
+  #upfGroup,#dnGroup{transition:transform 340ms cubic-bezier(.35,0,.2,1)}
+  .axis-line{stroke:var(--border);stroke-width:1;stroke-dasharray:2 4}
+  .axis-text{font-size:11px;fill:var(--faint)}
+  .topo-legend{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:0 0 10px;font-size:12px;color:var(--muted)}
+  .topo-legend i{display:inline-block;width:26px;height:0;border-top:2.2px solid var(--primary);margin-right:2px}
+  .topo-legend i.lg-cp{border-top:1.6px dashed var(--info);margin-left:12px}
+  .topo-legend i.lg-fence{width:16px;height:11px;border:1px solid var(--primary);border-radius:3px;background:repeating-linear-gradient(45deg,transparent 0 3px,rgba(0,109,114,.2) 3px 4px);margin-left:12px}
+  .topo-legend i.lg-card{width:16px;height:11px;border:1px solid var(--border);border-left:3px solid var(--primary);border-radius:3px;margin-left:12px}
+  @media(prefers-reduced-motion:reduce){
+    .tnode.reveal{animation:none}
+    #upfGroup,#dnGroup,.fence{transition:none}
+  }
+
+  /* 九槽成绩环与诊断日志 */
+  .score-hero{position:relative;display:flex;align-items:center;gap:24px;flex-wrap:wrap;border-top:4px solid var(--primary);animation:scoreIn 480ms ease-out}
+  @keyframes scoreIn{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:scale(1)}}
+  .ring{--score:0;--ring-color:var(--primary);width:112px;height:112px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex:0 0 auto;background:repeating-conic-gradient(from -1deg,transparent 0deg 38deg,#fff 38deg 40deg),conic-gradient(var(--ring-color) calc(var(--score)*1%),var(--disabled) 0)}
+  .ring-core{width:84px;height:84px;border-radius:50%;background:var(--panel);display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--ring-color);font-family:var(--mono);font-variant-numeric:tabular-nums;line-height:1}
+  .score-num{font-size:40px;line-height:44px;font-weight:700}.score-total{font-size:12px;line-height:16px;color:var(--muted)}
+  .conditional{font-family:inherit;font-size:16px;font-weight:700}.conditional+span{font-size:12px;margin-top:5px;color:var(--muted)}
+  .attempt{font-family:var(--mono);font-size:12.5px;letter-spacing:.04em;color:var(--primary);border:1px solid var(--primary-line);border-radius:4px;padding:1px 6px;vertical-align:middle}
+  .score-conclusion{font-size:16px;font-weight:700;color:var(--text);margin-top:6px}
+  .stale-banner{padding:12px 16px;margin-bottom:16px;background:var(--warn-bg);border:1px solid #E6CE9C;border-left:4px solid var(--warn);border-radius:8px;color:var(--text)}
+  .stale-banner b{display:block;color:var(--warn);margin-bottom:3px}
+  .diag{position:relative;border:1px solid var(--border);border-left:3px solid var(--border);border-radius:10px;padding:34px 16px 12px;margin-bottom:10px;font-size:14px;line-height:23px;background:var(--panel)}
+  .diag::before{position:absolute;left:16px;top:10px;font-family:var(--mono);font-size:12.5px;font-weight:700;letter-spacing:.05em}
+  .diag.ok{border-left-color:var(--ok)}.diag.ok::before{content:"PASS";color:var(--ok)}
+  .diag.bad{border-left-color:var(--bad);background:var(--bad-bg)}.diag.bad::before{content:"FAIL";color:var(--bad)}
+  .diag.warn{border-left-color:var(--warn);background:var(--warn-bg)}.diag.warn::before{content:"CHECK";color:var(--warn)}
+  .diag:not(.ok):not(.bad):not(.warn)::before{content:"CHECK";color:var(--info)}
+  .diag .dt{font-size:14.5px;font-weight:700;margin-bottom:3px}.diag-body{color:var(--text)}
+  .diag-actions{text-align:right;margin-top:8px}.diag-actions .btn{min-height:40px;padding:8px 14px;font-size:12.5px}
+  .missing-list{display:grid;gap:8px;margin:12px 0}.missing-item{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px 12px;border-bottom:1px solid var(--border-soft)}
+  .gauge{position:relative;height:12px;border-radius:6px;background:#E5ECE9;overflow:hidden;margin:8px 0 16px}
+  .gauge>div{height:100%;border-radius:6px}.gauge-threshold{position:absolute;top:0;bottom:0;width:2px;background:var(--text)}
+
+  footer{margin-top:12px;padding:22px 24px 28px;border-top:1px solid var(--border);background:rgba(255,255,255,.72);text-align:center;color:var(--muted);font-size:12.5px;line-height:1.9}
+  footer p{margin:0}
+  footer .foot-note{max-width:760px;margin:0 auto}
+  footer .foot-copy{margin-top:6px;font-size:12px;color:var(--faint);font-variant-numeric:tabular-nums}
+  footer .foot-sep{color:var(--border);margin:0 8px}
+  .teacher-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px}
+  .teacher-cell{background:var(--panel-2);border:1px solid var(--border-soft);border-radius:8px;padding:12px}
+  .teacher-cell .n{font-family:var(--mono);font-size:20px;font-weight:700}.teacher-cell .l{font-size:12.5px;color:var(--muted)}
+  .modal-overlay{position:fixed;inset:0;background:rgba(21,54,59,.32);z-index:100;display:flex;align-items:center;justify-content:center;padding:24px}
+  .modal-dialog{position:relative;background:var(--panel);border-top:4px solid var(--primary);border-radius:14px;box-shadow:var(--shadow-pop);max-width:920px;width:100%;max-height:84vh;overflow:auto;padding:24px 28px}
+  .modal-close-row{text-align:right}.modal-actions{display:flex;justify-content:flex-end;gap:12px;margin-top:20px}
+  .toast{position:fixed;right:24px;bottom:24px;z-index:120;max-width:420px;padding:12px 16px;background:var(--warn-bg);border:1px solid var(--warn);border-radius:8px;box-shadow:var(--shadow-pop);color:var(--text)}
+
+  @media(max-width:1100px){.layout{grid-template-columns:248px minmax(0,1fr)}main{padding-left:24px;padding-right:24px}}
+  @media(max-width:900px){
+    header{padding-left:20px;padding-right:20px;flex-wrap:wrap}.layout{grid-template-columns:1fr}
+    nav.steps{position:static;height:auto;display:flex;overflow-x:auto;gap:8px;border-right:none;border-bottom:1px solid var(--border);padding:12px 16px}
+    .step-item{min-width:176px;margin:0;min-height:62px}.step-item:not(:first-child)::before{display:none}
+    main{padding-top:24px}.think label{min-height:44px}
+  }
+  @media(max-width:640px){
+    header{position:relative;padding:12px 16px 0;gap:8px}header .logo{font-size:18px;flex-basis:100%}.seal{width:28px;height:28px}header .spacer{display:none}
+    main{padding:20px 16px 72px}.page-title{font-size:22px;line-height:30px}.card{padding:16px}.step-goal{align-items:flex-start;flex-direction:column;gap:4px}
+    .think label{display:flex;margin:0;min-height:44px}.think-meta{position:static;display:block;margin:-24px 0 8px;text-align:right}
+    .baseline-compare{grid-template-columns:1fr}.navbtns{align-items:stretch}.nav-next{flex-direction:column;align-items:flex-end}.missing-item{align-items:flex-start;flex-direction:column}
+    .modal-overlay{padding:12px}.modal-dialog{padding:20px 16px}.score-hero{gap:16px}
+    footer{padding:18px 16px 22px;font-size:12px;line-height:1.8}footer .foot-copy{font-size:11.5px}
+  }
+  @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <img class="seal" src="data:image/png;base64,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" alt="厦门华厦学院校徽" width="34" height="34">
+    <span>5G SA 专网仿真工作台
+      <small>5G SA 专网方案设计 · 分步引导式仿真练习</small>
+    </span>
+  </div>
+  <div class="spacer"></div>
+  <button class="hbtn" id="btn4g">📚 5G↔4G 对应速查</button>
+  <button class="hbtn" id="btnTeacher">👩‍🏫 教师统计</button>
+</header>
+
+<div class="layout">
+  <nav class="steps" id="stepNav" aria-label="实验步骤"></nav>
+  <main id="mainHost"></main>
+</div>
+
+<footer>
+  <p class="foot-note">本工作台为教学演示工具，判定规则与仿真数据均采用简化模型，不作为工程设计与验收依据。</p>
+  <p class="foot-copy">© 2026 厦门华厦学院 信息与智能机电学院<span class="foot-sep">|</span>版本 2.0</p>
+</footer>
+
+<script>
+/* ============================================================
+   §1 数据层（继承旧版仿真配置器知识基线，并与教学 docx 对齐）
+   ============================================================ */
+const OPTIONS = {
+  deployMode:['独立专网','共享专网','公网切片'],
+  band:['n28','n41','n78','n79'],
+  frame:['2.5ms双周期','2.5ms单周期','5ms单周期'],
+  sst:['1(eMBB)','2(URLLC)','3(mMTC)','4(V2X)'],
+  qi:[1,2,3,4,5,6,7,8,9],
+  ambr:['1Gbps','2Gbps','4Gbps','10Gbps'],
+  upfLoc:['园区下沉','集中部署'],
+  upfSpec:['1G','5G','10G']
+};
+const SLOT_BY_FRAME = {
+  '2.5ms双周期':['10:2:2','9:3:2','8:4:2'],
+  '2.5ms单周期':['10:2:2','9:3:2','8:4:2'],
+  '5ms单周期':['6:4:4']
+};
+const QI_PDB = {1:100,2:150,3:50,4:300,5:100,6:300,7:100,8:300,9:300};
+const CAPACITY = {'1G':1000,'5G':5000,'10G':10000};
+const REDUNDANCY = 0.20;
+const PARAM_KEYS = ['deployMode','band','frame','slot','sst','qi','ambr','upfLoc','upfSpec'];
+const PARAM_LABELS = {
+  deployMode:'① 部署模式', band:'② 频段选择', frame:'③ 帧结构类型', slot:'④ 特殊时隙配比',
+  sst:'⑤ 切片类型(SST)', qi:'⑥ 5QI值', ambr:'⑦ UE-AMBR', upfLoc:'⑧ UPF部署位置', upfSpec:'⑨ UPF规格'
+};
+// 诊断回步映射：值为零基步骤索引，界面步号 = 索引 + 1
+const PARAM_STEP_INDEX = {deployMode:2, band:3, frame:3, slot:3, sst:4, qi:4, ambr:4, upfLoc:4, upfSpec:5};
+// 4G 对应关系提示（挂在参数卡上）
+const MAP4G_HINT = {
+  deployMode:'', band:'', frame:'', slot:'',
+  sst:'APN（都是选网络的标识，切片更精细）',
+  qi:'QCI（都是 QoS 等级，5QI 范围更大）',
+  ambr:'APN-AMBR（5G 分 UE 级 + 会话级）',
+  upfLoc:'4G 的 SGW-U/PGW-U 无边缘下沉能力',
+  upfSpec:''
+};
+const MAP4G_TABLE = [
+  ['SNSSAI（切片标识）','APN（接入点名称）','都是选择特定网络的标识','5G 切片更精细，可多切片共用一个 APN'],
+  ['5QI','QCI','都是标识 QoS 等级的数字','5QI 值范围更大，支持自定义'],
+  ['UE-AMBR','APN-AMBR','都限制用户聚合比特率','5G 是 UE级 + 会话级两级 AMBR'],
+  ['AMF','MME','都负责移动性管理','5G AMF 与 SMF 分离，拆分更细'],
+  ['SMF','SGW-C / PGW-C','都负责会话管理','SMF 是纯控制面，与 UPF 分离'],
+  ['UPF','SGW-U / PGW-U','都负责数据转发','UPF 可灵活下沉到网络边缘'],
+  ['UDM','HSS','都存储用户签约数据','UDM 增加了切片选择等功能'],
+  ['N2 接口','S1-AP 接口','基站与核心网控制面接口','接口名称和协议不同'],
+  ['N3 接口','S1-U 接口','基站与核心网用户面接口','接口名称和协议不同']
+];
+
+const SCENARIOS = [
+  { id:'coal', name:'智慧煤矿', icon:'⛏️', category:'urllc',
+    brief:'大型煤矿推进"无人化采掘"，需 5G SA 专网实现矿卡远程操控、井下环境实时监测、无人机自动巡检。井下覆盖是最大挑战。',
+    ind:{area:'10km² 矿区（含井下巷道）', dev:'200台矿卡(远程操控/视频回传)+100台巡检无人机+300个井下传感器', bw:'上行>200Mbps，下行>100Mbps', dl:'<30ms（设备控制指令）', rel:'99.999%', sp:'需支持井下覆盖（深度>500米），终端需具备防爆特性'},
+    coverage:'覆盖 10km²', delayThreshold:30, bandwidthReq:600,
+    correct:{deployMode:['独立专网'],band:['n28'],frame:['2.5ms双周期'],sst:['1(eMBB)'],qi:[3],ambr:['4Gbps'],upfLoc:['园区下沉']},
+    reason:{deployMode:'矿区安全等级高，数据不能出矿区，只有独立专网能满足物理隔离要求。',band:'矿区覆盖面积达10km²，n28 波长最长、覆盖最远；高频段覆盖半径不足以支撑露天矿坑。',frame:'矿卡视频回传是持续上行大流量业务，需要连续上行时隙，应选上行占比更高的 2.5ms 双周期。',sst:'主要业务是视频回传和传感器采集，属典型 eMBB 大带宽场景。',ambr:'矿卡多路视频回传，单用户需高速率，参考 4Gbps。'} },
+  { id:'factory', name:'智慧工厂', icon:'🏭', category:'urllc',
+    brief:'大型家电制造工厂建设 5G 全连接工厂，AGV 低时延调度，高清质检视频实时回传边缘平台做 AI 质检。',
+    ind:{area:'5万㎡ 钢结构厂房', dev:'200台AGV+30路高清视频监控+500个传感器+50台员工终端', bw:'上行>500Mbps（多路视频回传），下行>100Mbps', dl:'<20ms（AGV调度），<100ms（监控视频）', rel:'99.999%', sp:'数据不能出园区（数据安全合规）'},
+    coverage:'园区级覆盖', delayThreshold:20, bandwidthReq:720,
+    correct:{deployMode:['独立专网'],band:['n41','n78'],frame:['2.5ms双周期'],sst:['1(eMBB)'],qi:[3],ambr:['4Gbps'],upfLoc:['园区下沉']},
+    reason:{deployMode:'工厂产线数据不允许出园区，需要独立专网做物理隔离。',band:'园区范围适中但并发密度高，n41/n78 兼顾覆盖与容量；n28 容量不足，n79 覆盖太小。',frame:'以视频回传为主的上行业务模型，需要连续上行时隙，应选 2.5ms 双周期。',sst:'视频监控+员工上网属 eMBB；AGV 低时延由 5QI 单独保障，不改变 SST 大类。',ambr:'多路视频+AGV+传感器并发，参考 4Gbps。'} },
+  { id:'port', name:'智慧港口', icon:'🚢', category:'urllc',
+    brief:'大型集装箱港口升级自动化码头，岸桥司机移到中控室通过 5G 远程操控岸桥装卸，对时延和可靠性要求极高。',
+    ind:{area:'2km² 码头作业区', dev:'50台岸桥(远程操控)+100台无人集卡+100个设备传感器', bw:'上行>300Mbps，下行>200Mbps', dl:'<10ms（岸桥远程操控），<50ms（数据采集）', rel:'99.999%', sp:'沿海高湿盐雾环境，设备需防腐'},
+    coverage:'码头区域覆盖', delayThreshold:10, bandwidthReq:360,
+    correct:{deployMode:['独立专网'],band:['n78'],frame:['2.5ms双周期'],sst:['2(URLLC)'],qi:[3],ambr:['2Gbps'],upfLoc:['园区下沉']},
+    reason:{deployMode:'远程操控关系作业安全，必须独立专网保障可控性。',band:'岸桥视频回传需要大带宽，n78 在容量与覆盖间最均衡；n28 容量不足以支撑高清视频流。',frame:'岸桥视频回传+集卡调度均以上行为主，应选 2.5ms 双周期争取更多上行资源。',sst:'岸桥远程操控对时延极敏感（<10ms），属 URLLC 场景。',ambr:'单岸桥视频回传+控制指令，参考 2Gbps。'} },
+  { id:'campus', name:'智慧园区', icon:'🏢', category:'embb',
+    brief:'高新技术产业园区建设 5G SA 智慧园区，智能安防、环境监测、园区办公多业务统一承载。',
+    ind:{area:'1km² 科技园区', dev:'200路安防摄像头+500个环境传感器+200台员工终端+100个智能照明', bw:'下行>1Gbps（峰值），上行>100Mbps', dl:'<50ms', rel:'99.99%', sp:'混合业务并发（人+物同时接入），需差异化 QoS'},
+    coverage:'覆盖 1km²+', bandwidthReq:480,
+    correct:{deployMode:['共享专网','公网切片'],band:['n41'],frame:['2.5ms单周期','5ms单周期'],sst:['1(eMBB)'],qi:[6,9],ambr:['1Gbps','2Gbps'],upfLoc:['集中部署']},
+    reason:{deployMode:'安全要求中等，独立专网成本过高，共享专网或公网切片性价比更合适。',band:'覆盖面积和并发量中等，n41 在覆盖与容量间最均衡。',frame:'员工上网和监控回看都是下行为主的业务模型，应选下行占比更高的单周期帧结构。',sst:'上网、视频、传感器都是标准 eMBB 业务，无低时延强制要求。',ambr:'员工上网+传感器混合，参考 1Gbps 或 2Gbps。'} },
+  { id:'grid', name:'智慧电网', icon:'⚡', category:'urllc',
+    brief:'电网公司利用 5G SA 专网实现输电线路智能巡检和配网差动保护，无人机回传高清视频，差动保护指令需极低时延。',
+    ind:{area:'50km 输电线路（带状覆盖）', dev:'200台巡检无人机+300个输电线路传感器', bw:'上行>150Mbps，下行>50Mbps', dl:'<15ms（差动保护指令）', rel:'99.999%', sp:'狭长输电走廊（非面状覆盖），终端电池续航要求高'},
+    coverage:'50km 带状覆盖', delayThreshold:15, bandwidthReq:480,
+    correct:{deployMode:['独立专网'],band:['n28'],frame:['2.5ms双周期'],sst:['2(URLLC)'],qi:[3],ambr:['1Gbps','2Gbps'],upfLoc:['园区下沉']},
+    reason:{deployMode:'电网涉及国家关键基础设施，安全要求极高，必须独立专网。',band:'50km 狭长带状覆盖是关键约束，n28 覆盖半径最大，其余频段无法连续覆盖整条走廊。',frame:'无人机巡检视频回传是持续上行业务，应选 2.5ms 双周期获得更多上行时隙。',sst:'差动保护要求时延 <15ms，属 URLLC 场景。',ambr:'无人机视频+传感器，参考 1Gbps 或 2Gbps。'} },
+  { id:'hospital', name:'智慧医院', icon:'🏥', category:'urllc',
+    brief:'三甲医院建设智慧医院，远程手术机器人需医生通过 5G 远程操控，时延极苛刻；移动查房车跨楼宇漫游保持业务连续。',
+    ind:{area:'8万㎡ 院区（门诊楼+住院楼+手术楼）', dev:'50台移动查房车+50台远程手术机器人+200个医疗传感器', bw:'上行>400Mbps，下行>500Mbps', dl:'<10ms（远程手术操控）', rel:'99.999%', sp:'数据不出院区（患者隐私合规），需支持移动性'},
+    coverage:'院区覆盖', delayThreshold:10, bandwidthReq:2500,
+    correct:{deployMode:['独立专网'],band:['n78'],frame:['2.5ms双周期'],sst:['2(URLLC)'],qi:[3],ambr:['4Gbps'],upfLoc:['园区下沉']},
+    reason:{deployMode:'患者隐私数据不能出院区，必须独立专网。',band:'远程手术需大带宽承载多路高清视频，n78 带宽容量最大；n28 容量不足。',frame:'手术视频回传+查房车数据以上行为主，应选 2.5ms 双周期。',sst:'远程手术要求时延 <10ms，是最典型的 URLLC 场景。',ambr:'手术机器人多路高清视频+传感器，参考 4Gbps。'} },
+  { id:'airport', name:'智慧机场', icon:'✈️', category:'embb',
+    brief:'大型国际机场建设 5G SA 专网，同时满足地勤调度专网通信与航站楼旅客高速上网。',
+    ind:{area:'5km² 航站楼+停机坪', dev:'300台地勤终端+500个环境传感器+2000个旅客终端', bw:'上行>200Mbps，下行>800Mbps（旅客服务）', dl:'<30ms（地勤调度）', rel:'99.999%', sp:'高密度用户场景，需同时服务公众与专网'},
+    coverage:'覆盖 5km²', bandwidthReq:12800,
+    correct:{deployMode:['共享专网'],band:['n41','n78'],frame:['2.5ms单周期','5ms单周期'],sst:['1(eMBB)'],qi:[6,9],ambr:['2Gbps','4Gbps'],upfLoc:['集中部署']},
+    reason:{deployMode:'地勤与旅客业务安全等级不同但可共存，共享专网兼顾安全与成本。',band:'5km² 覆盖+高密度用户并发，n41/n78 兼顾覆盖与容量。',frame:'旅客上网是下行为主，应选单周期帧结构。',sst:'旅客上网+地勤调度都是标准 eMBB 业务。',ambr:'旅客终端+地勤终端，参考 2Gbps 或 4Gbps。'} },
+  { id:'mine', name:'智慧矿山', icon:'⛰️', category:'urllc',
+    brief:'大型露天铁矿智能化改造，重型矿卡通过 5G 实现远程驾驶和自动循迹，每台矿卡回传多路高清视频，上行带宽需求大。',
+    ind:{area:'15km² 露天矿坑', dev:'200台重型矿卡(多路视频回传)+300个环境/设备传感器', bw:'上行>250Mbps（多路视频回传），下行>150Mbps', dl:'<25ms（矿卡远程操控）', rel:'99.999%', sp:'广覆盖、大连接，矿区地形复杂（沟壑纵横）'},
+    coverage:'覆盖 15km²', delayThreshold:25, bandwidthReq:516,
+    correct:{deployMode:['独立专网'],band:['n28'],frame:['2.5ms双周期'],sst:['1(eMBB)'],qi:[3],ambr:['4Gbps'],upfLoc:['园区下沉']},
+    reason:{deployMode:'矿山安全要求高，数据不能出矿区，应选独立专网。',band:'15km² 露天矿坑覆盖范围大，n28 覆盖最远。',frame:'矿卡多路视频回传是持续上行业务，应选 2.5ms 双周期。',sst:'以视频回传和传感器数据为主，属 eMBB 大带宽场景。',ambr:'矿卡多路视频回传（前方+后方+驾驶室），参考 4Gbps。'} }
+];
+
+const BUSINESS_POOL = [
+  { id:'agv',      name:'AGV/机器人控制指令',  direction:'上行', unitMbps:0.5, note:'控制信令，小数据量' },
+  { id:'teleop',   name:'远程操控/自动驾驶指令', direction:'上行', unitMbps:2,   note:'控制指令+状态回传' },
+  { id:'cam1080',  name:'高清视频监控(1080P)', direction:'上行', unitMbps:15,  note:'单路摄像头→服务器' },
+  { id:'cam4k',    name:'超高清视频(4K)',      direction:'上行', unitMbps:40,  note:'单路高清摄像头' },
+  { id:'drone',    name:'无人机巡检视频',      direction:'上行', unitMbps:20,  note:'单路空中视频回传' },
+  { id:'sensor',   name:'传感器数据采集',      direction:'上行', unitMbps:0.1, note:'温湿度/振动等' },
+  { id:'truckcam', name:'矿卡视频回传(多路)',  direction:'上行', unitMbps:50,  note:'前方+后方+驾驶室多路' },
+  { id:'mobile',   name:'移动终端上网',        direction:'下行', unitMbps:10,  note:'员工手机/平板' },
+  { id:'pax',      name:'旅客移动终端上网',    direction:'下行', unitMbps:5,   note:'机场/园区旅客' }
+];
+
+/* ============================================================
+   §2 判定引擎（纯函数，继承旧版规则，一处出口）
+   ============================================================ */
+const ST = { UNSET:'unselected', PENDING:'pending', OK:'ok', BAD:'bad', WARN:'warn' };
+const isNum = v => v !== '' && v !== null && v !== undefined;
+
+function delayMetrics(sc, qi, loc){
+  const pdb = QI_PDB[Number(qi)];
+  const locDelay = loc === '园区下沉' ? 2 : 15;
+  const simDelay = Math.round(0.15 * pdb + locDelay);
+  return { qi:Number(qi), pdb, loc, locDelay, simDelay, threshold:sc.delayThreshold, pass: simDelay <= sc.delayThreshold };
+}
+function capacityMetrics(sc, spec){
+  const capacity = CAPACITY[spec];
+  const satisfaction = Math.round(capacity / sc.bandwidthReq * 100);
+  const occupancy = Math.round(sc.bandwidthReq / capacity * 100);
+  let status, text;
+  if(satisfaction >= 100){ status = ST.OK;
+    text = `容量满足度 ${satisfaction}%，规格「${spec}」（${capacity}Mbps）可承载场景带宽需求 ${sc.bandwidthReq}Mbps。`;
+  } else if(satisfaction >= 75 && spec === '10G'){ status = ST.WARN;
+    text = `已选最高规格「10G」（${capacity}Mbps），但场景理论需求达 ${sc.bandwidthReq}Mbps，满足度约 ${satisfaction}%。工程上可分区域部署第二套 UPF 分流——此项"有条件通过"，不扣分。`;
+  } else { status = ST.BAD;
+    text = `容量不足：场景需求 ${sc.bandwidthReq}Mbps，当前规格「${spec}」仅 ${capacity}Mbps（满足度 ${satisfaction}%），请提高规格档位。`;
+  }
+  return { spec, capacity, req:sc.bandwidthReq, satisfaction, occupancy, status, text };
+}
+function evSingleRule(sc, sel, k){
+  const v = sel[k];
+  const base = { key:k, value:v, correct:sc.correct[k] };
+  if(v === '' || v == null) return { ...base, status:ST.UNSET, text:'尚未选择。' };
+  const ok = sc.correct[k].includes(v);
+  const reason = sc.reason[k] || '参考值与该场景终端并发/速率量级匹配。';
+  return { ...base, status: ok?ST.OK:ST.BAD,
+    text: ok ? `✅ 判定正确 — ${reason}` : `❌ 判定错误 — 正确应为「${sc.correct[k].join(' / ')}」。${reason}` };
+}
+function evFrame(sc, sel){
+  const v = sel.frame;
+  if(!v) return { key:'frame', value:v, correct:sc.correct.frame, status:ST.UNSET, text:'尚未选择。' };
+  const ok = sc.correct.frame.includes(v);
+  return { key:'frame', value:v, correct:sc.correct.frame, status: ok?ST.OK:ST.BAD,
+    text: ok ? `✅ 判定正确 — ${sc.reason.frame}` : `❌ 判定错误 — 正确应为「${sc.correct.frame.join(' / ')}」。${sc.reason.frame}` };
+}
+function evSlot(sc, sel){
+  const {frame, slot} = sel;
+  if(!frame) return { key:'slot', value:slot, status: slot?ST.PENDING:ST.UNSET, text:'需先选择③帧结构类型。' };
+  if(!slot) return { key:'slot', value:slot, status:ST.PENDING, text:'⏳ 待选择 — 请先确定③帧结构，再选时隙配比。' };
+  const legal = (SLOT_BY_FRAME[frame]||[]).includes(slot);
+  return { key:'slot', value:slot, status: legal?ST.OK:ST.BAD,
+    text: legal ? `✅ 与帧结构「${frame}」联动匹配（合法组合：${SLOT_BY_FRAME[frame].join(' / ')}）。`
+                : `❌ 时隙配比「${slot}」与帧结构「${frame}」不配套，合法取值为 ${SLOT_BY_FRAME[frame].join(' / ')}。` };
+}
+// URLLC：⑥+⑧ 联合时延仿真（升级版：错误时明确诊断责任归属）
+function evJointDelay(sc, sel){
+  const qi = sel.qi, loc = sel.upfLoc;
+  if(!isNum(qi) || !loc){
+    const mk = (key, v, half) => ({ key, value:v, status: isNum(v)&&v!==''?ST.PENDING:ST.UNSET,
+      text: (isNum(v)&&v!=='') ? half : '尚未选择。' });
+    return { qi: mk('qi', qi, '⏳ 待判定 · 需配合⑧UPF部署位置'),
+             upfLoc: mk('upfLoc', loc, '⏳ 待判定 · 需配合⑥5QI值') };
+  }
+  const m = delayMetrics(sc, qi, loc);
+  // 反事实诊断：固定对方，换最优值看能否通过 —— 告诉学生问题出在哪半边
+  const qiFixPass  = delayMetrics(sc, 3, loc).pass;   // 若换成最优 5QI=3 能否过
+  const locFixPass = delayMetrics(sc, qi, '园区下沉').pass; // 若换成下沉能否过
+  let diag;
+  if(m.pass) diag = `仿真时延 ${m.simDelay}ms ≤ 阈值 ${m.threshold}ms，满足要求。`;
+  else if(!qiFixPass && locFixPass) diag = `问题主要在 ⑥5QI：即使 UPF 保持「${loc}」，只要 5QI 预算降到 50ms（5QI=3）即可达标；当前 5QI=${m.qi} 的标准预算 ${m.pdb}ms 过高。`;
+  else if(qiFixPass && !locFixPass) diag = `问题主要在 ⑧部署位置：当前 5QI=${m.qi} 的预算本身可行，但「集中部署」引入 15ms 回传时延导致超标，改为「园区下沉」（约 2ms）即可达标。`;
+  else diag = `⑥与⑧都有问题：5QI=${m.qi} 预算 ${m.pdb}ms 过高，且「${loc}」回传时延也偏大，需同时改为 5QI=3 + 园区下沉。`;
+  return {
+    qi: { key:'qi', value:qi, status: m.pass?ST.OK:ST.BAD, metric:m,
+      text: (m.pass?'✅ ':'❌ ') + diag + `（5QI=${m.qi} 标准时延预算 ${m.pdb}ms）` },
+    upfLoc: { key:'upfLoc', value:loc, status: m.pass?ST.OK:ST.BAD, metric:m,
+      text: (m.pass?'✅ ':'❌ ') + `部署位置对总时延贡献 ${m.locDelay}ms。` + diag }
+  };
+}
+function evQiRule(sc, sel){
+  const v = sel.qi;
+  if(!isNum(v)) return { key:'qi', value:v, correct:sc.correct.qi, status:ST.UNSET, text:'尚未选择。' };
+  const ok = sc.correct.qi.includes(Number(v));
+  return { key:'qi', value:v, correct:sc.correct.qi, status: ok?ST.OK:ST.BAD,
+    text: ok ? '✅ 判定正确 — 下行缓冲/浏览类业务对时延不敏感，5QI=6 或 9 即可。'
+             : `❌ 判定错误 — 正确应为 5QI=${sc.correct.qi.join('或')}。该场景对时延不敏感，选 URLLC 级低时延 5QI 会浪费调度资源。` };
+}
+function evUpfLocRule(sc, sel){
+  const v = sel.upfLoc;
+  if(!v) return { key:'upfLoc', value:v, correct:sc.correct.upfLoc, status:ST.UNSET, text:'尚未选择。' };
+  const ok = sc.correct.upfLoc.includes(v);
+  return { key:'upfLoc', value:v, correct:sc.correct.upfLoc, status: ok?ST.OK:ST.BAD,
+    text: ok ? '✅ 判定正确 — 时延不敏感，可集中部署降低建设与运维成本。'
+             : `❌ 判定错误 — 正确应为「${sc.correct.upfLoc.join('/')}」。该场景无需下沉边缘，集中部署性价比更高。` };
+}
+function evUpfSpec(sc, sel){
+  const v = sel.upfSpec;
+  if(!v) return { key:'upfSpec', value:v, status:ST.UNSET, text:'尚未选择。' };
+  const m = capacityMetrics(sc, v);
+  return { key:'upfSpec', value:v, status:m.status, text:(m.status===ST.OK?'✅ ':m.status===ST.WARN?'⚠️ ':'❌ ')+m.text, metric:m };
+}
+function evaluateAll(sc, sel){
+  const params = {};
+  params.deployMode = evSingleRule(sc, sel, 'deployMode');
+  params.band = evSingleRule(sc, sel, 'band');
+  params.frame = evFrame(sc, sel);
+  params.slot = evSlot(sc, sel);
+  params.sst = evSingleRule(sc, sel, 'sst');
+  if(sc.category === 'urllc'){
+    const j = evJointDelay(sc, sel);
+    params.qi = j.qi; params.upfLoc = j.upfLoc;
+  } else {
+    params.qi = evQiRule(sc, sel);
+    params.upfLoc = evUpfLocRule(sc, sel);
+  }
+  params.ambr = evSingleRule(sc, sel, 'ambr');
+  params.upfSpec = evUpfSpec(sc, sel);
+  const metrics = {
+    delay: (sc.category==='urllc' && isNum(sel.qi) && sel.upfLoc) ? delayMetrics(sc, sel.qi, sel.upfLoc) : null,
+    capacity: sel.upfSpec ? capacityMetrics(sc, sel.upfSpec) : null
+  };
+  const done = PARAM_KEYS.filter(k => params[k].status === ST.OK).length;
+  const allChosen = PARAM_KEYS.every(k => isNum(sel[k]));
+  return { params, metrics, done, allChosen, total:PARAM_KEYS.length };
+}
+
+/* ============================================================
+   §3 应用状态
+   ============================================================ */
+const app = {
+  scenario: null,
+  sel: {},              // 学生选择
+  think: {},            // 思考前置的回答 {param: {choice, right}}
+  calcRows: [],         // 带宽计算器
+  snapshot: null,       // 正式评测快照 {result, live, attempt}
+  attempts: 0,
+  step: 0,
+  maxStep: 0
+};
+
+// 教师统计（localStorage 持久化）
+const TKEY = 'sa5g_teacher_stats';
+function loadStats(){ try{ return JSON.parse(localStorage.getItem(TKEY)) || {}; }catch(e){ return {}; } }
+function saveStats(s){ localStorage.setItem(TKEY, JSON.stringify(s)); }
+function recordStats(scId, result){
+  const all = loadStats();
+  const rec = all[scId] || { total:0, wrong:{} };
+  rec.total++;
+  PARAM_KEYS.forEach(k => {
+    if(result.params[k].status !== ST.OK) rec.wrong[k] = (rec.wrong[k]||0)+1;
+  });
+  all[scId] = rec; saveStats(all);
+}
+
+/* ============================================================
+   §4 步骤定义与渲染骨架
+   ============================================================ */
+const STEPS = [
+  { name:'场景与需求', desc:'认领场景，划出 5 项指标' },
+  { name:'带宽估算', desc:'业务累加 +20% 冗余' },
+  { name:'网络架构', desc:'① 部署模式 + 拓扑认知' },
+  { name:'空口配置', desc:'② 频段 ③ 帧结构 ④ 时隙' },
+  { name:'核心网配置', desc:'⑤ 切片 ⑥ 5QI ⑦ AMBR ⑧ UPF位置' },
+  { name:'容量与规格', desc:'⑨ UPF 规格定档' },
+  { name:'提交评测', desc:'诊断报告 + 导出成果' }
+];
+
+const main = document.getElementById('mainHost');
+const navEl = document.getElementById('stepNav');
+
+function renderNav(){
+  navEl.innerHTML = STEPS.map((s, i) => {
+    const locked = !app.scenario && i > 0;
+    const cls = ['step-item', i===app.step?'active':'', locked?'locked':'', stepDone(i)?'done':''].join(' ');
+    return `<button type="button" class="${cls}" data-step="${i}" ${i===app.step?'aria-current="step"':''} ${locked?'aria-disabled="true"':''}>
+      <span class="step-num">${stepDone(i) && i!==app.step ? '✓' : String(i+1).padStart(2,'0')}</span>
+      <span><span class="step-name">${s.name}</span><span class="step-desc">${s.desc}</span></span>
+    </button>`;
+  }).join('');
+  navEl.querySelectorAll('.step-item').forEach(el => {
+    el.addEventListener('click', () => {
+      const i = Number(el.dataset.step);
+      if(!app.scenario && i > 0) return;
+      app.step = i; render();
+    });
+  });
+}
+function stepDone(i){
+  if(i === 0) return !!app.scenario;
+  if(i === 1) return app.calcRows.some(r => r.bizId && Number(r.qty) > 0);
+  const groups = {2:['deployMode'], 3:['band','frame','slot'], 4:['sst','qi','ambr','upfLoc'], 5:['upfSpec']};
+  if(groups[i]) return groups[i].every(k => isNum(app.sel[k]));
+  return false;
+}
+
+function render(keepScroll){
+  renderNav();
+  const pages = [pageScenario, pageCalc, pageArch, pageRadio, pageCore, pageSpec, pageResult];
+  const y = window.scrollY;
+  main.innerHTML = '';
+  const div = document.createElement('div');
+  div.className = 'step-page show';
+  div.innerHTML = pages[app.step]();
+  main.appendChild(div);
+  bindPage(app.step, div);
+  if(keepScroll) window.scrollTo(0, y);
+  else window.scrollTo({top:0, behavior:'smooth'});
+  saveProgress();
+}
+
+/* 进度持久化：刷新不丢失（按场景隔离） */
+const PKEY = 'sa5g_progress';
+function saveProgress(){
+  if(!app.scenario) return;
+  try{
+    localStorage.setItem(PKEY, JSON.stringify({
+      scenarioId: app.scenario.id, sel: app.sel, think: app.think,
+      calcRows: app.calcRows, calcSeq, attempts: app.attempts, step: app.step
+    }));
+  }catch(e){}
+}
+function loadProgress(){
+  try{
+    const p = JSON.parse(localStorage.getItem(PKEY));
+    if(!p) return;
+    const sc = SCENARIOS.find(s => s.id === p.scenarioId);
+    if(!sc) return;
+    app.scenario = sc; app.sel = p.sel || {}; app.think = p.think || {};
+    app.calcRows = p.calcRows || []; calcSeq = p.calcSeq || 0;
+    app.attempts = p.attempts || 0; app.step = p.step || 0;
+  }catch(e){}
+}
+function navBtns(prevOk = true, nextLabel = '下一步 →', nextOk = true){
+  const reason = app.step===0 && !nextOk ? '<span class="nav-reason" id="nextReason">请先选择一个行业场景</span>' : '';
+  return `<div class="navbtns">
+    <button class="btn ghost" id="prevBtn" ${app.step===0?'disabled':''}>← 上一步</button>
+    <span class="nav-next">${reason}<button class="btn" id="nextBtn" ${nextOk?'':'disabled'} ${reason?'aria-describedby="nextReason"':''}>${nextLabel}</button></span>
+  </div>`;
+}
+
+/* 每步任务行：做什么 + 完成度（填写≠合格，仅表示已填写） */
+const STEP_TASK = [
+  '选择 1 个场景，并看清覆盖、业务、带宽、时延、可靠性 5 项指标。',
+  '添加业务并填写并发数，记住"×1.2 冗余后"的估算值。',
+  '先判断数据隔离要求，再选择 ① 部署模式。',
+  '依次完成 ② 频段 → ③ 帧结构 → ④ 时隙配比。',
+  '完成 ⑤—⑧；URLLC 场景需联动检查 ⑥ 5QI 与 ⑧ UPF 位置。',
+  '对照第 2 步估算和场景带宽基线，选择 ⑨ UPF 规格。',
+  '补齐 9 项后提交；有错误时按诊断返回修改。'
+];
+const STEP_KEYS = [[], [], ['deployMode'], ['band','frame','slot'], ['sst','qi','ambr','upfLoc'], ['upfSpec'], []];
+function stepGoal(i){
+  let done = 0, total = 0;
+  if(i === 0){
+    total = 1; done = app.scenario ? 1 : 0;
+  } else if(i === 1){
+    total = 1;
+    const rows = app.calcRows.filter(r => r.bizId);
+    done = (rows.length && rows.every(r => Number(r.qty) >= 1)) ? 1 : 0;
+  } else if(i === 6){
+    total = PARAM_KEYS.length; done = PARAM_KEYS.filter(k => isNum(app.sel[k])).length;
+  } else {
+    const ks = STEP_KEYS[i] || [];
+    total = ks.length; done = ks.filter(k => isNum(app.sel[k])).length;
+  }
+  return `<div class="step-goal">
+    <span>${STEP_TASK[i]}</span>
+    <span style="font-family:var(--mono);font-size:12.5px;color:${done===total?'var(--ok)':'var(--muted)'};white-space:nowrap">已填写 ${done} / ${total}</span>
+  </div>`;
+}
+
+/* ---------- 步骤 1：场景与需求 ---------- */
+function pageScenario(){
+  return `
+    <h2 class="page-title">第 1 步 · 认领你们的场景</h2>
+    <p class="page-sub">8 组对应 8 个行业场景。点击卡片认领后，先读任务书，把 5 项核心指标看清楚——后面所有设计决策都由它们推导出来。</p>
+    ${stepGoal(0)}
+    <div class="scn-grid">
+      ${SCENARIOS.map(s => `
+        <div class="scn-card ${app.scenario && app.scenario.id===s.id?'active':''}" data-id="${s.id}">
+          <span class="ic">${s.icon}</span>
+          <span class="cat">${s.category==='urllc'?'低时延型 · URLLC':'大容量型 · eMBB'}</span>
+          <div class="nm">${s.name}</div>
+          <div class="bf">${s.coverage} · 带宽需求 ≈${s.bandwidthReq}Mbps${s.delayThreshold?` · 时延<${s.delayThreshold}ms`:' · 时延不敏感'}</div>
+        </div>`).join('')}
+    </div>
+    <div id="scnDetail">${app.scenario ? scenarioDetailHtml(app.scenario) : ''}</div>
+    ${navBtns(false, '确认场景，下一步：带宽估算 →', !!app.scenario)}
+  `;
+}
+function scenarioDetailHtml(sc){
+  return `
+    <div class="card" style="margin-top:18px">
+      <h3>${sc.icon} ${sc.name} · 场景需求说明书</h3>
+      <p style="color:var(--muted);font-size:13.5px;margin-top:0">${sc.brief}</p>
+      <table class="req">
+        <tr><th>覆盖面积</th><td>${sc.ind.area}</td></tr>
+        <tr><th>终端/业务</th><td>${sc.ind.dev}</td></tr>
+        <tr><th>带宽要求</th><td>${sc.ind.bw}</td></tr>
+        <tr><th>时延要求</th><td>${sc.ind.dl}</td></tr>
+        <tr><th>可靠性</th><td>${sc.ind.rel}</td></tr>
+        <tr><th>特殊需求</th><td>${sc.ind.sp}</td></tr>
+      </table>
+      <div style="margin-top:12px">
+        <span class="tag">判定方式：${sc.category==='urllc'?'仿真计算时延':'仿真计算容量裕度'}</span>
+        <span class="tag">场景带宽基线 ≈ ${sc.bandwidthReq} Mbps（用于⑨UPF规格判定）</span>
+      </div>
+    </div>
+    <div class="hint">💡 <b>设计顺序提示：</b>先别急着选参数。下一步先用带宽计算器估算本场景总带宽——它决定你后面 ⑨UPF 规格的选择依据。</div>`;
+}
+
+/* ---------- 步骤 2：带宽估算 ---------- */
+function pageCalc(){
+  return `
+    <h2 class="page-title">第 2 步 · 带宽估算</h2>
+    <p class="page-sub">从业务资源池中挑出本场景会用到的业务，填并发数量，算出总带宽。这是中立算术工具，不计分——但算错会导致后面 ⑨UPF 规格选错。</p>
+    ${stepGoal(1)}
+    <div class="hint">📖 <b>计算方法：</b>逐业务：单路带宽 × 并发数量 = 小计；全部累加后 <b>×1.2（加 20% 冗余）</b>，再向上取整到标准档位（1G / 5G / 10G）。</div>
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <h3 style="margin:0">🧮 带宽估算计算器</h3>
+        <button class="btn ghost" id="addRow">＋ 添加业务</button>
+      </div>
+      <div id="calcRows"></div>
+      <div class="calc-sum-bar">
+        <span>合计带宽：<b id="calcTotal">0 Mbps</b></span>
+        <span>×1.2 冗余后：<b id="calcFinal" style="color:var(--blue)">0 Mbps</b></span>
+        <span>建议 UPF 档位：<b id="calcTier" style="color:var(--ok)">—</b></span>
+      </div>
+      <div class="suggest" id="calcSuggest"></div>
+    </div>
+    ${navBtns(true, '下一步：网络架构 →')}
+  `;
+}
+function tierOf(mbps){ return mbps <= 1000 ? '1G' : mbps <= 5000 ? '5G' : mbps <= 10000 ? '10G' : '超出10G（需分流）'; }
+
+/* ---------- 步骤 3：网络架构（①部署模式 + 拓扑） ---------- */
+function pageArch(){
+  return `
+    <h2 class="page-title">第 3 步 · 网络架构设计</h2>
+    <p class="page-sub">架构选型是方案的第一决策：数据能不能出园区？预算和安全怎么权衡？先回答下面的问题，再选部署模式。</p>
+    ${stepGoal(2)}
+    ${thinkHtml('deployMode', '先想一想：本场景的数据安全和隔离要求，允许业务数据离开园区/矿区吗？', [
+      ['绝不允许，需物理隔离','yes'],
+      ['要求较高但可与运营商共享核心网','mid'],
+      ['要求一般，成本优先','no']
+    ], ans => ({
+      yes:'判断正确 → 应选「独立专网」。',
+      mid:'有道理 → 「共享专网」（无线独享+核心网共享）正为此设计。',
+      no:'成本敏感场景 → 「公网切片」更合适。请确认本场景是否真属于此类。'
+    }[ans]))}
+    <div class="pgrid">${paramCardHtml('deployMode')}</div>
+    <div class="card" style="margin-top:18px">
+      <div class="topo-head"><h3>🗺️ 5G SA 专网拓扑 · 你的选择落在哪里</h3><button type="button" class="btn ghost topo-zoom">⛶ 放大查看</button></div>
+      <p style="font-size:12.5px;color:var(--muted);margin:0 0 8px">横轴是物理距离：节点间距越长，链路时延越大。选择⑧ UPF 部署位置时，UPF 会真的在图上移动——下沉就进园区围墙，回传链路随之缩短；集中就退到运营商侧，回传链路被拉长。点击任一参数牌可直接跳到它的配置位置。</p>
+      <span class="topo-legend"><i></i>用户面链路<i class="lg-cp"></i>控制面信令<i class="lg-fence"></i>园区边界<i class="lg-card"></i>参数落位</span>
+      <div class="topo-wrap" id="topoHost"></div>
+    </div>
+    ${navBtns(true, '下一步：空口配置 →')}
+  `;
+}
+
+/* ---------- 步骤 4：空口配置 ---------- */
+function pageRadio(){
+  return `
+    <h2 class="page-title">第 4 步 · 空口配置</h2>
+    <p class="page-sub">无线侧三要素：频段决定覆盖与容量的基本面，帧结构/时隙配比决定上下行资源分配。</p>
+    ${stepGoal(3)}
+    ${thinkHtml('band', '先想一想：本场景是"覆盖优先"还是"容量优先"？', [
+      ['覆盖优先（面积大/带状/井下）','cover'],
+      ['容量优先（高密度/大带宽）','cap'],
+      ['两者均衡','bal']
+    ], ans => ({
+      cover:'覆盖优先 → 低频段 n28 是主力候选。',
+      cap:'容量优先 → 看向 n78/n79 大带宽频段。',
+      bal:'均衡 → n41 往往是最稳的选择。对照场景指标再确认一次。'
+    }[ans]))}
+    <div class="pgrid">${paramCardHtml('band')}</div>
+    ${thinkHtml('frame', '先想一想：本场景的业务以"上行"还是"下行"为主？（回看第 1 步需求里的带宽要求）', [
+      ['上行为主（视频回传/采集类）','up'],
+      ['下行为主（上网/分发类）','down']
+    ], ans => ({
+      up:'上行为主 → 应选上行时隙更多的「2.5ms 双周期」帧结构。',
+      down:'下行为主 → 应选下行占比更高的「单周期」帧结构。'
+    }[ans]))}
+    <div class="pgrid">${paramCardHtml('frame')}${paramCardHtml('slot')}</div>
+    ${navBtns(true, '下一步：核心网配置 →')}
+  `;
+}
+
+/* ---------- 步骤 5：核心网配置 ---------- */
+function pageCore(){
+  const sc = app.scenario;
+  return `
+    <h2 class="page-title">第 5 步 · 核心网配置</h2>
+    <p class="page-sub">切片、QoS、签约速率与 UPF 部署位置。参数名旁的蓝色标注，标出了每个 5G 参数在 4G 网络中的对应概念，帮助你贯通两代移动通信的知识。</p>
+    ${stepGoal(4)}
+    ${sc.category==='urllc' ? `
+    ${thinkHtml('sst', '先想一想：本场景最关键的那类业务（远控/保护/手术），时延要求属于哪个等级？', [
+      ['≤20ms 级，必须超可靠低时延','urllc'],
+      ['100ms 级，大带宽即可','embb']
+    ], ans => ({
+      urllc:'正确 → 切片应选 SST=2(URLLC)，5QI 也要配套选低时延等级。',
+      embb:'再想想 — 回看需求里的时延指标。如果关键业务时延 <20ms，应按 URLLC 对待。'
+    }[ans]))}` : `
+    <div class="hint">💡 本场景为 eMBB 大容量型：时延不敏感，5QI 选缓冲/浏览类（6 或 9），UPF 集中部署降成本即可。</div>`}
+    <div class="pgrid">
+      ${paramCardHtml('sst')}${paramCardHtml('qi')}${paramCardHtml('ambr')}${paramCardHtml('upfLoc')}
+    </div>
+    ${navBtns(true, '下一步：容量与规格 →')}
+  `;
+}
+
+/* ---------- 步骤 6：容量与规格 ---------- */
+function pageSpec(){
+  const calcTotal = calcFinal();
+  return `
+    <h2 class="page-title">第 6 步 · ⑨ UPF 规格定档</h2>
+    <p class="page-sub">规格必须扛住场景带宽需求。你在第 2 步算出的冗余后带宽是 <b style="font-family:var(--mono)">${calcTotal > 0 ? calcTotal + ' Mbps（建议档位 ' + tierOf(calcTotal) + '）' : '（尚未计算 — 可回第 2 步用计算器估算）'}</b>。</p>
+    ${stepGoal(5)}
+    <div class="hint">🧮 <b>仿真判定：</b>满足度 = 规格容量 ÷ 场景带宽基线（${app.scenario ? app.scenario.bandwidthReq : '—'}Mbps）。≥100% 合格；不足则判容量不足。规格容量：1G=1000Mbps，5G=5000Mbps，10G=10000Mbps。</div>
+    <div class="pgrid">${paramCardHtml('upfSpec')}</div>
+    ${navBtns(true, '下一步：提交评测 →')}
+  `;
+}
+
+/* ---------- 步骤 7：提交评测 ---------- */
+/* 第 7 步缺项清单：每项可直接回步 */
+function missingListHtml(){
+  const miss = PARAM_KEYS.filter(k => !isNum(app.sel[k]));
+  if(!miss.length) return '';
+  return `<div class="card">
+    <h3>还差 ${miss.length} 项参数</h3>
+    <div class="missing-list">
+      ${miss.map(k => {
+        const idx = PARAM_STEP_INDEX[k];
+        return `<div class="missing-item">
+          <span>${PARAM_LABELS[k]}<span style="color:var(--muted);font-size:12.5px">　· 第 ${idx+1} 步</span></span>
+          <button class="btn ghost" data-goto-param="${k}">回到第 ${idx+1} 步</button>
+        </div>`;
+      }).join('')}
+    </div>
+  </div>`;
+}
+
+function pageResult(){
+  const sc = app.scenario;
+  let html = `
+    <h2 class="page-title">第 7 步 · 提交仿真评测</h2>
+    <p class="page-sub">提交后逐项判定并锁定答对项；答错项会给出错因诊断，可直接回到对应步骤修正后重新提交。</p>
+    ${stepGoal(6)}
+    <div class="card" style="text-align:center;padding:26px">
+      <button class="btn ok" id="submitBtn" style="font-size:16px;padding:13px 44px" ${allFilled()?'':'disabled'}>
+        ${app.snapshot ? '重新提交仿真' : '🚀 提交仿真评测'}
+      </button>
+      <div style="margin-top:10px;font-size:12.5px;color:var(--muted)">
+        ${allFilled() ? '9 项参数已填写完整。提交后将生成成绩、方案拓扑、仿真仪表和逐项诊断。' : '还有参数未选择，暂不能提交。下列缺项可点击直接回到对应步骤：'}
+      </div>
+    </div>
+    ${allFilled() ? '' : missingListHtml()}
+    <div id="resultArea">${app.snapshot ? staleBannerHtml(app.snapshot) + resultHtml(app.snapshot, sc) : ''}</div>`;
+  return html;
+}
+function allFilled(){ return PARAM_KEYS.every(k => isNum(app.sel[k])); }
+function staleBannerHtml(snap){
+  if(snap.live) return '';
+  return `<div class="stale-banner"><b>结果已过期 · 当前显示第 ${snap.attempt} 次提交的历史快照</b>你在提交后修改了参数，以下成绩、拓扑和诊断不代表当前配置，请重新提交仿真。</div>`;
+}
+
+function resultHtml(snap, sc){
+  const r = snap.result;
+  const score = Math.round(r.done / r.total * 100);
+  const nonOk = PARAM_KEYS.filter(k => r.params[k].status !== ST.OK);
+  const onlyWarn = nonOk.length > 0 && nonOk.every(k => r.params[k].status === ST.WARN);
+  const color = onlyWarn || score >= 60 ? (score >= 90 || onlyWarn ? 'var(--ok)' : 'var(--warn)') : 'var(--bad)';
+  const m = r.metrics;
+  return `
+    <div class="card score-hero" id="resultSummary" tabindex="-1" aria-live="polite">
+      <div class="ring" style="--score:${score};--ring-color:${color}"><div class="ring-core">${onlyWarn ? '<span class="conditional">有条件</span><span>通过</span>' : `<span class="score-num">${score}</span><span class="score-total">/100</span>`}</div></div>
+      <div style="flex:1;min-width:240px">
+        <h3 style="margin:0 0 4px">${sc.icon} ${sc.name} · 方案评估 <span class="attempt">ATTEMPT ${String(snap.attempt).padStart(2,'0')}</span></h3>
+        <div class="score-conclusion">${score}/100 · ${r.done}/${r.total}项合格</div>
+        <p style="margin:0;color:var(--muted);font-size:13.5px">${onlyWarn
+          ? `9 项参数判定全部正确；其中 ${nonOk.length} 项受候选值上限限制为"有条件通过"，不计扣分。`
+          : `9 项参数中 <b>${r.done}</b> 项判定正确。${nonOk.length ? '错误项诊断见下，可回对应步骤修正。' : '全部通过，🎉 方案达标！'}`}</p>
+      </div>
+      <button class="btn ghost" id="exportBtn">📄 ${snap.live ? '导出结果（Markdown）' : `导出第 ${snap.attempt} 次历史结果`}</button>
+    </div>
+    <div class="card">
+      <div class="topo-head"><h3>🗺️ 方案拓扑总览</h3><button type="button" class="btn ghost topo-zoom">⛶ 放大查看</button></div>
+      <p style="font-size:12.5px;color:var(--muted);margin:0 0 8px">本次提交的完整方案。参数牌按判定结果着色（绿=合格，红=不合格，黄=有条件通过）；⑨规格不足时用户面链路会标红，表示容量撑不住这条业务。点击任一参数牌可回到对应步骤修改。</p>
+      <span class="topo-legend"><i></i>用户面链路<i class="lg-cp"></i>控制面信令<i class="lg-fence"></i>园区边界<i class="lg-card"></i>参数落位</span>
+      <div class="topo-wrap" id="topoHost"></div>
+    </div>
+    ${(m.delay || m.capacity) ? `
+    <div class="card"><h3>📊 仿真仪表</h3>
+      ${m.delay ? `<div style="font-size:13.5px">仿真时延：<b style="font-family:var(--mono);color:${m.delay.pass?'var(--ok)':'var(--bad)'}">${m.delay.simDelay} ms</b>（阈值 <${m.delay.threshold}ms）</div>
+        <div class="gauge"><div style="width:${Math.min(100, Math.round(m.delay.simDelay/m.delay.threshold*100))}%;background:${m.delay.pass?'var(--ok)':'var(--bad)'}"></div></div>` : ''}
+      ${m.capacity ? `<div style="font-size:13.5px;margin-top:8px">容量满足度：<b style="font-family:var(--mono);color:${m.capacity.status===ST.OK?'var(--ok)':m.capacity.status===ST.WARN?'var(--warn)':'var(--bad)'}">${m.capacity.satisfaction}%</b>（${m.capacity.capacity}Mbps / 需求 ${m.capacity.req}Mbps）</div>
+        <div class="gauge"><div style="width:${Math.min(100, m.capacity.satisfaction)}%;background:${m.capacity.status===ST.OK?'var(--ok)':m.capacity.status===ST.WARN?'var(--warn)':'var(--bad)'}"></div></div>` : ''}
+    </div>` : ''}
+    <div class="card"><h3>🩺 逐项诊断报告</h3>
+      ${PARAM_KEYS.map(k => {
+        const p = r.params[k];
+        const cls = p.status===ST.OK?'ok':p.status===ST.WARN?'warn':p.status===ST.BAD?'bad':'';
+        const stepNo = PARAM_STEP_INDEX[k] + 1;
+        const action = p.status===ST.BAD
+          ? `<button class="btn ghost" data-goto-param="${k}">回到第${stepNo}步 · 修改${PARAM_LABELS[k]}</button>`
+          : (p.status===ST.WARN ? `<button class="btn ghost" data-goto-param="${k}">查看第6步规格说明</button>` : '');
+        return `<div class="diag ${cls}" id="diag-${k}"><div class="dt">${PARAM_LABELS[k]}：${p.value ?? '未选'}</div><div class="diag-body">${p.text}</div>${action ? `<div class="diag-actions">${action}</div>` : ''}</div>`;
+      }).join('')}
+    </div>
+    <div class="card"><h3>📚 5G↔4G 参数对应关系</h3>
+      <table class="map4g">
+        <tr><th>5G SA 参数</th><th>4G LTE 对应</th><th>功能相似性</th><th>关键区别</th></tr>
+        ${MAP4G_TABLE.map(r2 => `<tr>${r2.map(c => `<td>${c}</td>`).join('')}</tr>`).join('')}
+      </table>
+    </div>`;
+}
+
+/* ============================================================
+   §5 组件：参数卡片 + 思考前置 + 拓扑图
+   ============================================================ */
+function paramCardHtml(key){
+  const isSlot = key === 'slot';
+  const opts = isSlot ? (SLOT_BY_FRAME[app.sel.frame] || []) : OPTIONS[key];
+  const cur = app.sel[key] ?? '';
+  const hint4g = MAP4G_HINT[key] ? `<span class="badge4g"><b>4G 对应：</b>${MAP4G_HINT[key]}</span>` : '';
+  return `
+    <div class="pcard" id="pcard-${key}">
+      <label>${PARAM_LABELS[key]}${hint4g}</label>
+      <select id="sel-${key}" ${isSlot && !app.sel.frame ? 'disabled' : ''}>
+        <option value="">${isSlot ? (app.sel.frame ? '请选择…' : '先选择③帧结构') : '请选择…'}</option>
+        ${opts.map(o => `<option value="${o}" ${String(o)===String(cur)?'selected':''}>${o}</option>`).join('')}
+      </select>
+      <div class="status" id="status-${key}"></div>
+    </div>`;
+}
+const THINK_ANSWERS = {}; // key -> 记录
+function thinkHtml(key, q, choices, verdictFn){
+  THINK_ANSWERS[key] = { q, choices, verdictFn };
+  return `
+    <fieldset class="think" data-think="${key}">
+      <legend class="tq">🤔 ${q}</legend>
+      <span class="think-meta">思考练习 · 不计分</span>
+      ${choices.map(([label, val]) => `<label><input type="radio" name="think-${key}" value="${val}"> ${label}</label>`).join('')}
+      <div class="verdict" id="verdict-${key}" aria-live="polite"></div>
+      <div class="think-next">带着这个判断，完成下方参数 ↓</div>
+    </fieldset>`;
+}
+
+/* 拓扑：横轴是物理距离。节点间距就是链路长度，所以 UPF 下沉/集中的差别
+   不靠文字说明，而靠 UPF 方块自己移动到园区围墙内或外。 */
+const TOPO_L = { upfX:400, dnX:670, shift:260, upfW:170, dnW:140, gnbR:350, fenceNarrow:356, fenceWide:806 };
+const DM_TEXT = {
+  '独立专网':'① 独立专网 —— 园区围墙内闭环，业务数据不出园',
+  '共享专网':'① 共享专网 —— 共享运营商 RAN 与核心网，园区只自建部分网元',
+  '公网切片':'① 公网切片 —— 无专属硬件，靠逻辑切片隔离，与公网用户共享资源'
+};
+
+function topoCard(id, key, x, y, w, order, name){
+  return `
+    <g id="tn-${id}" class="tnode" data-key="${key||''}" data-order="${order}">
+      <rect class="tn-card" x="${x}" y="${y}" width="${w}" height="22" rx="5"/>
+      <rect class="tn-bar" x="${x}" y="${y+4}" width="3" height="14" rx="1.5" fill="#C6D4D1"/>
+      <text class="tn-name" x="${x+11}" y="${y+15}">${name}</text>
+      <text class="tn-val" x="${x+w-26}" y="${y+15}" text-anchor="end">—</text>
+      <text class="tn-state" x="${x+w-8}" y="${y+15}" text-anchor="end"></text>
+    </g>`;
+}
+
+function topoSvg(){
+  return `
+  <svg viewBox="0 0 1120 462" role="img" aria-label="5G SA 专网拓扑：横轴为物理距离，节点间距表示链路时延">
+    <defs>
+      <pattern id="hatch" width="6" height="6" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
+        <line x1="0" y1="0" x2="0" y2="6" stroke="#006D72" stroke-width="1" opacity=".13"/>
+      </pattern>
+      <marker id="arw" viewBox="0 0 10 10" refX="8.6" refY="5" markerWidth="5.2" markerHeight="5.2" orient="auto-start-reverse">
+        <path d="M1.6,1.2 L8.6,5 L1.6,8.8" fill="none" stroke="#006D72" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+      </marker>
+      <marker id="arwc" viewBox="0 0 10 10" refX="8.6" refY="5" markerWidth="5.2" markerHeight="5.2" orient="auto-start-reverse">
+        <path d="M1.6,1.2 L8.6,5 L1.6,8.8" fill="none" stroke="#315F9D" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+      </marker>
+    </defs>
+
+    <g id="tn-deployMode" class="tnode" data-key="deployMode" data-order="1">
+      <rect id="dmBand" x="40" y="12" width="1040" height="34" rx="8" fill="#F1F6F4" stroke="#D3E0DD" stroke-width="1"/>
+      <text id="dmText" x="56" y="33" font-size="12.5" fill="#0B4A4E">① 部署模式：尚未选择 —— 先决定数据要不要出园区</text>
+    </g>
+
+    <rect id="topoFence" class="fence weak" x="24" y="200" width="356" height="200" rx="14"/>
+
+    <text class="plane-label" x="40" y="190">用户面 · USER PLANE</text>
+    <text class="plane-label" x="180" y="70">控制面 · CONTROL PLANE</text>
+
+    <path class="link-cp" d="M265,212 V152" marker-end="url(#arwc)"/>
+    <path class="link-cp" d="M350,116 H400" marker-end="url(#arwc)"/>
+    <path class="link-cp" d="M570,116 H640" marker-end="url(#arwc)"/>
+    <path id="n4Path" class="link-cp" d="M485,152 V212" marker-end="url(#arwc)"/>
+
+    <g><rect class="dev-box" x="180" y="80" width="170" height="72" rx="10"/>
+      <text class="dev-title" x="194" y="100">AMF</text>
+      <text class="dev-sub" x="194" y="114">接入与移动性管理</text>
+      ${topoCard('sst','sst',186,120,158,5,'⑤ 切片')}</g>
+    <g><rect class="dev-box" x="400" y="80" width="170" height="72" rx="10"/>
+      <text class="dev-title" x="414" y="100">SMF</text>
+      <text class="dev-sub" x="414" y="114">会话管理</text>
+      ${topoCard('qi','qi',406,120,158,6,'⑥ 5QI')}</g>
+    <g><rect class="dev-box" x="640" y="80" width="170" height="72" rx="10"/>
+      <text class="dev-title" x="654" y="100">UDM</text>
+      <text class="dev-sub" x="654" y="114">统一数据管理</text>
+      ${topoCard('ambr','ambr',646,120,158,7,'⑦ AMBR')}</g>
+
+    <path class="link-up" d="M130,260 H180" marker-end="url(#arw)"/>
+    <path id="linkGnUp" class="link-up" d="M350,260 H400" marker-end="url(#arw)"/>
+    <path id="linkUpDn" class="link-up" d="M570,260 H670" marker-end="url(#arw)"/>
+
+    <g><rect class="dev-box" x="40" y="222" width="90" height="76" rx="10"/>
+      <text class="dev-title" x="52" y="252">UE</text>
+      <text class="dev-sub" x="52" y="270">行业终端</text>
+      <text class="dev-sub" x="52" y="286">AGV·摄像头</text></g>
+
+    <g><rect class="dev-box" x="180" y="212" width="170" height="96" rx="10"/>
+      <text class="dev-title" x="265" y="252" text-anchor="middle">gNB 基站</text>
+      <text class="dev-sub" x="265" y="270" text-anchor="middle">接入网 · 空口侧</text></g>
+
+    <g id="upfGroup">
+      <rect class="dev-box" x="400" y="212" width="170" height="96" rx="10"/>
+      <text class="dev-title" x="485" y="250" text-anchor="middle">UPF</text>
+      <text class="dev-sub" x="485" y="268" text-anchor="middle">用户面功能</text>
+      <text id="upfHint" class="dev-hint" x="485" y="290" text-anchor="middle">尚未确定部署位置</text>
+      ${topoCard('upfLoc','upfLoc',400,322,182,8,'⑧ 部署位置')}
+      ${topoCard('upfSpec','upfSpec',400,348,182,9,'⑨ 规格')}
+    </g>
+
+    <text id="outHint" x="848" y="262" font-size="11" fill="#6E8280"></text>
+
+    <g id="dnGroup">
+      <rect class="dev-box ghost" x="670" y="222" width="140" height="76" rx="10"/>
+      <text class="dev-title" x="684" y="252">DN 数据网</text>
+      <text class="dev-sub" x="684" y="270">企业私有云</text>
+      <text class="dev-sub" x="684" y="286">或公网 Internet</text>
+    </g>
+
+    ${topoCard('band','band',180,322,182,2,'② 频段')}
+    ${topoCard('frame','frame',180,348,182,3,'③ 帧结构')}
+    ${topoCard('slot','slot',180,374,182,4,'④ 时隙配比')}
+
+    <line class="axis-line" x1="40" y1="424" x2="1070" y2="424"/>
+    <text class="axis-text" x="40" y="442">园区侧</text>
+    <text class="axis-text" x="555" y="442" text-anchor="middle">物理距离 —— 链路拉得越长，时延越大</text>
+    <text class="axis-text" x="1070" y="442" text-anchor="end">运营商侧 / 公网</text>
+  </svg>`;
+}
+/* 拓扑全屏查看：投影/细看时按屏幕宽度等比放大（SVG 矢量不糊），Esc 退出；
+   全屏 API 不可用（如 iframe 内嵌）时降级为固定定位浮层 */
+function updateZoomBtns(){
+  const on = !!(document.fullscreenElement || document.querySelector('.topo-wrap.zoom-fallback'));
+  document.querySelectorAll('.topo-zoom').forEach(b => { b.textContent = on ? '✕ 退出放大' : '⛶ 放大查看'; });
+}
+document.addEventListener('click', e => {
+  const btn = e.target.closest && e.target.closest('.topo-zoom');
+  if(!btn) return;
+  const card = btn.closest('.card');
+  const wrap = card && card.querySelector('.topo-wrap');
+  if(!wrap) return;
+  if(document.fullscreenElement){ document.exitFullscreen(); return; }
+  if(wrap.classList.contains('zoom-fallback')){ wrap.classList.remove('zoom-fallback'); updateZoomBtns(); return; }
+  if(wrap.requestFullscreen){
+    const p = wrap.requestFullscreen();
+    if(p && p.catch) p.catch(() => { wrap.classList.add('zoom-fallback'); updateZoomBtns(); });
+  }else{
+    wrap.classList.add('zoom-fallback'); updateZoomBtns();
+  }
+});
+document.addEventListener('fullscreenchange', updateZoomBtns);
+document.addEventListener('keydown', e => {
+  if(e.key !== 'Escape') return;
+  const z = document.querySelector('.topo-wrap.zoom-fallback');
+  if(z){ z.classList.remove('zoom-fallback'); updateZoomBtns(); }
+});
+
+function paintTopo(){
+  const host = document.getElementById('topoHost');
+  if(!host || !app.scenario) return;
+  if(!host.querySelector('svg')) host.innerHTML = topoSvg();
+  const r = evaluateAll(app.scenario, app.sel);
+  const snap = app.snapshot && app.snapshot.live ? app.snapshot.result : null;
+
+  // 参数牌：值 + 判定色
+  ['sst','qi','ambr','band','frame','slot','upfLoc','upfSpec'].forEach(k => {
+    const g = host.querySelector('#tn-' + k);
+    if(!g) return;
+    const src = snap ? snap.params[k] : r.params[k];
+    const v = app.sel[k];
+    const has = isNum(v);
+    const st = snap ? src.status : (has ? 'pending' : 'unselected');
+    g.classList.remove('st-ok','st-bad','st-warn','st-pending');
+    if(st !== 'unselected') g.classList.add('st-' + st);
+    g.querySelector('.tn-val').textContent = has ? String(v) : '—';
+    g.querySelector('.tn-state').textContent = !snap ? ''
+      : src.status === ST.OK ? '✔' : src.status === ST.WARN ? '⚠'
+      : src.status === ST.BAD ? '✘' : '';
+  });
+
+  // UPF 在图上移动：下沉进围墙，集中到运营商侧；DN 跟着一起走，园区内整段链路随之伸缩
+  const dx = app.sel.upfLoc === '集中部署' ? TOPO_L.shift : 0;
+  const upfL = TOPO_L.upfX + dx, upfR = upfL + TOPO_L.upfW;
+  const dnL = TOPO_L.dnX + dx;
+  const jump = app.topoDx === undefined || app.topoDx === dx;
+  const prevDx = app.topoDx;
+  const ug = host.querySelector('#upfGroup');
+  const dg = host.querySelector('#dnGroup');
+  // 页面每次重绘都会重建 SVG，所以要先把元素摆回上一次的位置，
+  // 再过渡到新位置——否则动画的起点会丢，或者每次改参数都重放一次。
+  const place = (el, val) => {
+    if(!el) return;
+    el.style.transition = 'none';
+    el.style.transform = `translateX(${val}px)`;
+    el.getBoundingClientRect();
+    el.style.transition = '';
+  };
+  if(jump){
+    place(ug, dx); place(dg, dx);
+  } else {
+    place(ug, prevDx); place(dg, prevDx);
+    if(ug) ug.style.transform = `translateX(${dx}px)`;
+    if(dg) dg.style.transform = `translateX(${dx}px)`;
+  }
+  app.topoDx = dx;
+  // 位置未定时 UPF 画成虚框，表示"还没装进园区"
+  const upfBox = ug && ug.querySelector('.dev-box');
+  if(upfBox) upfBox.classList.toggle('ghost', !app.sel.upfLoc);
+  // 下沉时数据网也在园区内，画实线；集中部署时在公网侧，画虚框
+  const dnBox = dg && dg.querySelector('.dev-box');
+  if(dnBox) dnBox.classList.toggle('ghost', app.sel.upfLoc !== '园区下沉');
+  const l1 = host.querySelector('#linkGnUp');
+  if(l1) l1.setAttribute('d', `M${TOPO_L.gnbR},260 H${upfL}`);
+  const l2 = host.querySelector('#linkUpDn');
+  if(l2) l2.setAttribute('d', `M${upfR},260 H${dnL}`);
+  const n4 = host.querySelector('#n4Path');
+  if(n4){
+    const cx = upfL + TOPO_L.upfW / 2;
+    n4.setAttribute('d', cx === 485 ? 'M485,152 V212' : `M485,152 V190 H${cx} V212`);
+  }
+
+  // 时延结论写在 UPF 上，随⑥⑧联合仿真变化
+  const hint = host.querySelector('#upfHint');
+  if(hint){
+    const loc = app.sel.upfLoc;
+    let t = '尚未确定部署位置', col = 'var(--muted)';
+    if(loc && isNum(app.sel.qi)){
+      const m = delayMetrics(app.scenario, app.sel.qi, loc);
+      t = `${loc === '园区下沉' ? '本地分流' : '经回传'} · 时延 ${m.simDelay}ms`;
+      col = m.pass ? 'var(--primary)' : 'var(--bad)';
+    } else if(loc){
+      t = loc === '园区下沉' ? '本地分流 · 数据不出园' : '经回传 · 数据出园';
+      col = loc === '园区下沉' ? 'var(--primary)' : 'var(--bad)';
+    }
+    hint.textContent = t;
+    hint.style.fill = col;
+  }
+
+  // ⑨规格不够时，用户面链路直接标红
+  if(l2) l2.classList.toggle('overload', (snap ? snap.params.upfSpec.status : ST.UNSET) === ST.BAD);
+
+  // ①部署模式：横幅文案 + 判定色 + 围墙形态
+  const dm = app.sel.deployMode;
+  const dmSt = snap ? snap.params.deployMode.status : (dm ? 'pending' : 'unselected');
+  const dt = host.querySelector('#dmText');
+  if(dt){
+    const mark = dmSt === ST.OK ? '✔ ' : dmSt === ST.BAD ? '✘ ' : dmSt === ST.WARN ? '⚠ ' : '';
+    dt.textContent = mark + (dm ? DM_TEXT[dm] : '① 部署模式：尚未选择 —— 先决定数据要不要出园区');
+    dt.style.fill = dmSt === ST.OK ? 'var(--ok)' : dmSt === ST.BAD ? 'var(--bad)'
+      : dmSt === ST.WARN ? 'var(--warn)' : '#0B4A4E';
+  }
+  const band = host.querySelector('#dmBand');
+  if(band){
+    band.style.fill = dmSt === ST.OK ? 'var(--ok-bg)' : dmSt === ST.BAD ? 'var(--bad-bg)'
+      : dmSt === ST.WARN ? 'var(--warn-bg)' : dm ? 'rgba(0,109,114,.07)' : '#F1F6F4';
+    band.style.stroke = dmSt === ST.OK ? 'var(--ok)' : dmSt === ST.BAD ? 'var(--bad)'
+      : dmSt === ST.WARN ? 'var(--warn)' : dm ? 'var(--primary-line)' : '#D3E0DD';
+  }
+  const fence = host.querySelector('#topoFence');
+  if(fence){
+    const fw = app.sel.upfLoc === '园区下沉' ? TOPO_L.fenceWide : TOPO_L.fenceNarrow;
+    const prevFw = app.topoFenceW;
+    const jumpF = prevFw === undefined || prevFw === fw;
+    fence.style.transition = 'none';
+    fence.setAttribute('width', jumpF ? fw : prevFw);
+    fence.getBoundingClientRect();
+    fence.style.transition = '';
+    if(!jumpF) fence.setAttribute('width', fw);
+    app.topoFenceW = fw;
+    fence.setAttribute('class', 'fence' + (dm === '独立专网' ? ' solid' : dm === '共享专网' ? '' : ' weak'));
+  }
+  // 数据不出园时，右侧运营商网络侧确实是闲置的
+  const oh = host.querySelector('#outHint');
+  if(oh) oh.textContent = app.sel.upfLoc === '园区下沉' ? '运营商网络侧 · 本方案未使用' : '';
+
+  bindTopoNodes(host);
+}
+
+/* 拓扑网元可点击：从图上直接跳到对应参数的配置位置 */
+function bindTopoNodes(host){
+  const svg = host.querySelector('svg');
+  if(!svg || svg.dataset.bound) return;
+  svg.dataset.bound = '1';
+  svg.querySelectorAll('.tnode[data-key]').forEach(g => {
+    const key = g.dataset.key;
+    if(!key || PARAM_STEP_INDEX[key] === undefined) return;
+    g.setAttribute('role', 'button');
+    g.setAttribute('tabindex', '0');
+    g.setAttribute('aria-label', `前往 ${PARAM_LABELS[key]} 的配置`);
+    const tip = document.createElementNS('http://www.w3.org/2000/svg', 'title');
+    tip.textContent = `点击前往 ${PARAM_LABELS[key]}`;
+    g.appendChild(tip);
+    g.addEventListener('click', () => gotoParam(key));
+    g.addEventListener('keydown', e => {
+      if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); gotoParam(key); }
+    });
+  });
+}
+
+/* 提交评测后，拓扑按 ①—⑨ 顺序逐项点亮 */
+function revealTopo(){
+  const nodes = [...document.querySelectorAll('#topoHost .tnode')]
+    .sort((a,b) => Number(a.dataset.order || 99) - Number(b.dataset.order || 99));
+  nodes.forEach((n, i) => {
+    n.style.animationDelay = (i * 70) + 'ms';
+    n.classList.add('reveal');
+  });
+}
+
+/* ============================================================
+   §6 页面绑定逻辑
+   ============================================================ */
+function markStale(){ if(app.snapshot) app.snapshot.live = false; }
+function selectScenario(sc){
+  app.scenario = sc; app.sel = {}; app.think = {}; app.calcRows = [];
+  app.snapshot = null; app.attempts = 0;
+  app.topoDx = undefined; app.topoFenceW = undefined;
+}
+function confirmScenarioChange(sc){
+  const box = modal(`
+    <h3 style="margin-top:0">更换场景将清空当前练习进度</h3>
+    <p>将清空已选参数、思考题、带宽计算器和当前结果，且无法撤销。建议先导出已有结果。</p>
+    <div class="modal-actions">
+      <button class="btn ghost" id="keepScenario">保留当前场景</button>
+      <button class="btn" id="confirmScenario">确认更换并清空</button>
+    </div>`, { initialFocus:'#keepScenario' });
+  box.overlay.querySelector('#keepScenario').addEventListener('click', box.close);
+  box.overlay.querySelector('#confirmScenario').addEventListener('click', () => {
+    box.close();
+    selectScenario(sc);
+    render();
+  });
+}
+
+function bindPage(step, root){
+  // 通用：底部翻页
+  const prev = root.querySelector('#prevBtn'), next = root.querySelector('#nextBtn');
+  if(prev) prev.addEventListener('click', () => { if(app.step>0){ app.step--; render(); } });
+  if(next) next.addEventListener('click', () => { if(app.step<STEPS.length-1){ app.step++; render(); } });
+
+  if(step === 0){
+    root.querySelectorAll('.scn-card').forEach(c => c.addEventListener('click', () => {
+      const sc = SCENARIOS.find(s => s.id === c.dataset.id);
+      if(app.scenario && app.scenario.id !== sc.id){ confirmScenarioChange(sc); return; }
+      if(!app.scenario) selectScenario(sc);
+      render();
+    }));
+  }
+  if(step === 1) bindCalc(root);
+  if([2,3,4,5].includes(step)) bindParams(root, step);
+  if(step === 6) bindResult(root);
+}
+
+/* 思考前置绑定 */
+function bindThinks(root){
+  root.querySelectorAll('.think').forEach(el => {
+    const key = el.dataset.think;
+    // 恢复之前已答的思考题状态（参数变化触发页面重绘时不丢失）
+    const saved = app.think[key];
+    if(saved){
+      const t = THINK_ANSWERS[key];
+      const radio = el.querySelector(`input[value="${saved}"]`);
+      if(radio) radio.checked = true;
+      const v0 = el.querySelector('.verdict');
+      v0.style.display = 'block'; v0.className = 'verdict';
+      v0.textContent = '💡 ' + t.verdictFn(saved);
+    }
+    el.querySelectorAll('input[type=radio]').forEach(radio => {
+      radio.addEventListener('change', () => {
+        const t = THINK_ANSWERS[key];
+        app.think[key] = radio.value;
+        const v = el.querySelector('.verdict');
+        v.style.display = 'block';
+        v.className = 'verdict';
+        v.textContent = '💡 ' + t.verdictFn(radio.value);
+      });
+    });
+  });
+}
+
+/* 参数卡绑定 */
+function bindParams(root, step){
+  if(step === 2){ const h = root.querySelector('#topoHost'); if(h){ h.innerHTML = topoSvg(); paintTopo(); } }
+  bindThinks(root);
+  const keys = {2:['deployMode'], 3:['band','frame','slot'], 4:['sst','qi','ambr','upfLoc'], 5:['upfSpec']}[step] || [];
+  keys.forEach(key => {
+    const sel = root.querySelector('#sel-' + key);
+    if(!sel) return;
+    sel.addEventListener('change', () => {
+      app.sel[key] = sel.value;
+      if(key === 'frame'){
+        const legal = SLOT_BY_FRAME[sel.value] || [];
+        if(app.sel.slot && !legal.includes(app.sel.slot)) app.sel.slot = '';
+      }
+      markStale();
+      render(true);
+    });
+  });
+  paintSnapshotOnCards(root, keys);
+}
+function paintSnapshotOnCards(root, keys){
+  const snap = app.snapshot;
+  keys.forEach(key => {
+    const card = root.querySelector('#pcard-' + key);
+    const stEl = root.querySelector('#status-' + key);
+    const sel = root.querySelector('#sel-' + key);
+    if(!card || !stEl) return;
+    if(snap && snap.live){
+      const p = snap.result.params[key];
+      card.classList.add('st-' + p.status);
+      stEl.innerHTML = p.text;
+      if(p.status === ST.OK){ sel.disabled = true; }
+      else if(p.status === ST.BAD || p.status === ST.WARN){
+        // 只有判定为不合格 / 有条件通过时才给"重新选择"入口；未选与待判定不出现
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'retry'; b.textContent = '重新选择此项 →';
+        b.addEventListener('click', () => {
+          sel.disabled = false;
+          card.scrollIntoView({behavior:motionBehavior(), block:'center'});
+          sel.focus({preventScroll:true});
+        });
+        stEl.appendChild(b);
+      }
+    }
+  });
+}
+
+/* 带宽计算器 */
+let calcSeq = 0;
+function validQty(value){ return /^[1-9]\d*$/.test(String(value).trim()); }
+function qtyValue(r){ return r.qtyDraft !== undefined ? r.qtyDraft : r.qty; }
+function calcFinal(){
+  const total = app.calcRows.reduce((a, r) => {
+    const b = BUSINESS_POOL.find(x => x.id === r.bizId);
+    return a + (b && validQty(qtyValue(r)) ? b.unitMbps * Number(qtyValue(r)) : 0);
+  }, 0);
+  return +(total * (1 + REDUNDANCY)).toFixed(2);
+}
+function bindCalc(root){
+  const host = root.querySelector('#calcRows');
+  function updateTotals(){
+    const total = app.calcRows.reduce((a, r) => {
+      const b = BUSINESS_POOL.find(x => x.id === r.bizId);
+      return a + (b && validQty(qtyValue(r)) ? b.unitMbps * Number(qtyValue(r)) : 0);
+    }, 0);
+    const fin = +(total * (1 + REDUNDANCY)).toFixed(2);
+    root.querySelector('#calcTotal').textContent = total.toFixed(1) + ' Mbps';
+    root.querySelector('#calcFinal').textContent = fin + ' Mbps';
+    root.querySelector('#calcTier').textContent = fin > 0 ? tierOf(fin) : '—';
+    const sg = root.querySelector('#calcSuggest');
+    if(fin > 0 && app.scenario){
+      sg.classList.add('show');
+      sg.innerHTML = `📌 记住这个数字：<b>${fin} Mbps</b>，第 6 步选 ⑨UPF 规格时要用。` +
+        (fin > app.scenario.bandwidthReq * 1.5 ? ' ⚠️ 注意：你的估算明显高于场景基线，检查一下是否多算了业务或数量。' : '');
+    } else sg.classList.remove('show');
+  }
+  function syncQty(rowEl, input){
+    const r = app.calcRows.find(x => x.rowId === Number(rowEl.dataset.row));
+    const raw = input.value;
+    const ok = validQty(raw);
+    if(ok){ r.qty = String(Number(raw)); delete r.qtyDraft; }
+    else { r.qtyDraft = raw; delete r.qty; }
+    const b = BUSINESS_POOL.find(x => x.id === r.bizId);
+    rowEl.classList.toggle('has-error', !ok);
+    input.setAttribute('aria-invalid', String(!ok));
+    const err = rowEl.querySelector('.qty-error');
+    if(err) err.textContent = ok ? '' : '数量需为≥1的整数；此行暂不计入合计';
+    rowEl.querySelector('.c-sub').textContent = b && ok ? (b.unitMbps * Number(raw)).toFixed(1) : '—';
+    updateTotals();
+  }
+  function paint(){
+    if(!app.calcRows.length){
+      host.innerHTML = `<div style="padding:24px 18px;text-align:center">
+        <div style="color:var(--muted);font-size:14px;margin-bottom:12px">还没有业务行。从本场景的真实业务开始，添加后填写并发数量。</div>
+        <button type="button" class="btn ghost" id="addFirstRow">＋ 添加第一条业务</button>
+      </div>`;
+    } else {
+      host.innerHTML = `<div class="calc-row head"><div>业务类型</div><div>方向</div><div>单路带宽</div><div>数量</div><div>小计(Mbps)</div><div></div></div>` +
+        app.calcRows.map(r => {
+          const b = BUSINESS_POOL.find(x => x.id === r.bizId);
+          const raw = qtyValue(r);
+          const ok = validQty(raw);
+          const used = new Set(app.calcRows.map(x => x.bizId).filter(Boolean));
+          return `<div class="calc-row${ok?'':' has-error'}" data-row="${r.rowId}">
+            <select class="c-biz" aria-label="业务类型">
+              <option value="">请选择业务类型…</option>
+              ${BUSINESS_POOL.map(x => `<option value="${x.id}" ${x.id===r.bizId?'selected':''} ${x.id!==r.bizId && used.has(x.id)?'disabled':''}>${x.name}</option>`).join('')}
+            </select>
+            <div>${b?b.direction:'—'}</div>
+            <div class="num">${b?b.unitMbps+' Mbps':'—'}</div>
+            <div class="qty-cell"><input type="number" class="c-qty" min="1" step="1" placeholder="数量" value="${raw}" aria-invalid="${!ok}" aria-describedby="qty-error-${r.rowId}">
+              <span class="qty-error" id="qty-error-${r.rowId}">${ok?'':'数量需为≥1的整数；此行暂不计入合计'}</span></div>
+            <div class="num c-sub">${b && ok ? (b.unitMbps*Number(raw)).toFixed(1) : '—'}</div>
+            <button class="c-del" title="删除" aria-label="删除业务行">✕</button>
+          </div>`;
+        }).join('');
+    }
+    updateTotals();
+  }
+  root.querySelector('#addRow').addEventListener('click', () => {
+    app.calcRows.push({ rowId:++calcSeq, bizId:'', qty:'' }); paint();
+  });
+  host.addEventListener('input', e => {
+    if(!e.target.classList.contains('c-qty')) return;
+    const rowEl = e.target.closest('.calc-row'); if(!rowEl) return;
+    syncQty(rowEl, e.target);
+  });
+  host.addEventListener('change', e => {
+    const rowEl = e.target.closest('.calc-row'); if(!rowEl) return;
+    const r = app.calcRows.find(x => x.rowId === Number(rowEl.dataset.row));
+    if(e.target.classList.contains('c-biz')){ r.bizId = e.target.value; paint(); }
+    if(e.target.classList.contains('c-qty')) syncQty(rowEl, e.target);
+  });
+  host.addEventListener('click', e => {
+    if(e.target.id === 'addFirstRow'){
+      app.calcRows.push({ rowId:++calcSeq, bizId:'', qty:'' });
+      paint();
+      const first = host.querySelector('.calc-row[data-row] select.c-biz');
+      if(first) first.focus();
+      return;
+    }
+    if(!e.target.classList.contains('c-del')) return;
+    const rowEl = e.target.closest('.calc-row');
+    app.calcRows = app.calcRows.filter(x => x.rowId !== Number(rowEl.dataset.row));
+    paint();
+  });
+  paint();
+}
+
+/* 提交与结果 */
+function motionBehavior(){ return matchMedia('(prefers-reduced-motion:reduce)').matches ? 'auto' : 'smooth'; }
+function gotoParam(key){
+  const step = PARAM_STEP_INDEX[key];
+  if(step === undefined) return;
+  app.step = step;
+  render();
+  const card = document.getElementById('pcard-' + key);
+  const sel = document.getElementById('sel-' + key);
+  if(card) card.scrollIntoView({behavior:motionBehavior(), block:'center'});
+  if(sel) sel.focus({preventScroll:true});
+}
+function focusResultSummary(){
+  const summary = document.getElementById('resultSummary');
+  if(!summary) return;
+  summary.scrollIntoView({behavior:motionBehavior(), block:'start'});
+  summary.focus({preventScroll:true});
+}
+function bindResult(root){
+  const th = root.querySelector('#topoHost');
+  if(th){ th.innerHTML = topoSvg(); paintTopo(); }
+  root.addEventListener('click', e => {
+    const btn = e.target.closest('[data-goto-param]');
+    if(btn) gotoParam(btn.dataset.gotoParam);
+  });
+  root.querySelector('#submitBtn').addEventListener('click', () => {
+    if(!allFilled()) return;
+    app.attempts++;
+    app.snapshot = { result: evaluateAll(app.scenario, app.sel), live:true, attempt:app.attempts, at:new Date() };
+    recordStats(app.scenario.id, app.snapshot.result);
+    render();
+    revealTopo();
+    focusResultSummary();
+  });
+  const ex = root.querySelector('#exportBtn');
+  if(ex) ex.addEventListener('click', exportMarkdown);
+}
+
+/* 导出 Markdown */
+function exportMarkdown(){
+  const sc = app.scenario, snap = app.snapshot;
+  if(!snap) return;
+  const r = snap.result;
+  const lines = [];
+  lines.push(`# ${sc.name} 5G SA 专网仿真评测结果`, '');
+  lines.push(`- 提交次数：第 ${snap.attempt} 次 · 时间：${snap.at.toLocaleString('zh-CN')}`);
+  lines.push(`- 总分：${r.done}/${r.total} 项合格`, '');
+  lines.push(`## 参数配置与判定`, '');
+  lines.push(`| 参数 | 本组取值 | 判定 | 说明 |`, `|---|---|---|---|`);
+  PARAM_KEYS.forEach(k => {
+    const p = r.params[k];
+    const st = p.status===ST.OK?'✅合格':p.status===ST.WARN?'⚠️有条件通过':p.status===ST.BAD?'❌不合格':'未判定';
+    lines.push(`| ${PARAM_LABELS[k]} | ${p.value ?? '—'} | ${st} | ${p.text.replace(/\|/g,'/')} |`);
+  });
+  if(r.metrics.delay) lines.push('', `## 时延仿真`, `仿真时延 ${r.metrics.delay.simDelay}ms（阈值 <${r.metrics.delay.threshold}ms），${r.metrics.delay.pass?'满足':'不满足'}要求。`);
+  if(r.metrics.capacity) lines.push('', `## 容量仿真`, `UPF 规格 ${r.metrics.capacity.spec}（${r.metrics.capacity.capacity}Mbps），场景需求 ${r.metrics.capacity.req}Mbps，满足度 ${r.metrics.capacity.satisfaction}%。`);
+  lines.push('', `## 5G↔4G 对应关系`, '', `| 5G SA | 4G LTE | 相似性 | 区别 |`, `|---|---|---|---|`);
+  MAP4G_TABLE.forEach(row => lines.push(`| ${row.join(' | ')} |`));
+  const blob = new Blob([lines.join('\n')], { type:'text/markdown;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `${sc.name}_5GSA仿真评测结果${snap.live ? '' : '_已过期'}.md`;
+  a.click(); URL.revokeObjectURL(a.href);
+}
+
+/* ============================================================
+   §7 顶栏弹层：4G 速查 + 教师统计
+   ============================================================ */
+function modal(html, options = {}){
+  const trigger = document.activeElement;
+  const ov = document.createElement('div');
+  ov.className = 'modal-overlay';
+  ov.innerHTML = `<div class="modal-dialog" role="dialog" aria-modal="true" tabindex="-1">
+    <div class="modal-close-row"><button class="hbtn" id="mClose">关闭 ✕</button></div>${html}</div>`;
+  const close = () => {
+    window.removeEventListener('keydown', onKey);
+    ov.remove();
+    if(trigger && document.contains(trigger)) trigger.focus({preventScroll:true});
+  };
+  const onKey = e => { if(e.key === 'Escape') close(); };
+  ov.addEventListener('click', e => { if(e.target === ov || e.target.id === 'mClose') close(); });
+  window.addEventListener('keydown', onKey);
+  document.body.appendChild(ov);
+  const initial = options.initialFocus ? ov.querySelector(options.initialFocus) : ov.querySelector('#mClose');
+  if(initial) initial.focus();
+  return { overlay:ov, close };
+}
+document.getElementById('btn4g').addEventListener('click', () => {
+  modal(`<h3 style="margin-top:0">📚 5G ↔ 4G 参数对应关系速查表</h3>
+    <table class="map4g"><tr><th>5G SA 参数</th><th>4G LTE 对应</th><th>功能相似性</th><th>关键区别</th></tr>
+    ${MAP4G_TABLE.map(r => `<tr>${r.map(c => `<td>${c}</td>`).join('')}</tr>`).join('')}</table>
+    <p style="font-size:12.5px;color:var(--muted)">理解 5G 与 4G 参数的对应关系，有助于把已学的 4G 知识迁移到 5G 专网设计中。</p>`);
+});
+document.getElementById('btnTeacher').addEventListener('click', () => {
+  const all = loadStats();
+  const cells = [];
+  Object.entries(all).forEach(([scId, rec]) => {
+    const sc = SCENARIOS.find(s => s.id === scId);
+    PARAM_KEYS.forEach(k => {
+      const w = rec.wrong[k] || 0;
+      if(rec.total > 0) cells.push({ sc: sc ? sc.name : scId, k, rate: Math.round(w/rec.total*100), w, t: rec.total });
+    });
+  });
+  modal(`<h3 style="margin-top:0">👩‍🏫 教师统计（本机累计，按参数错误率）</h3>
+    ${cells.length ? `<div class="teacher-grid">${cells.map(c => `
+      <div class="teacher-cell"><div class="n" style="color:${c.rate>50?'var(--bad)':c.rate>20?'var(--warn)':'var(--ok)'}">${c.rate}%</div>
+      <div class="l">${c.sc} · ${PARAM_LABELS[c.k]}（错 ${c.w}/${c.t} 次）</div></div>`).join('')}</div>
+      <button class="hbtn" id="clearStats" style="margin-top:14px">🗑 清空统计</button>`
+    : '<p style="color:var(--muted)">还没有提交记录。学生提交评测后，这里按参数累计错误率。</p>'}`);
+  const cs = document.getElementById('clearStats');
+  if(cs) cs.addEventListener('click', () => { localStorage.removeItem(TKEY); document.querySelector('.hbtn#mClose')?.click(); });
+});
+
+/* 启动 */
+loadProgress();
+render();
+</script>
+<script type="text/javascript">
+(function initCxRobot(retries){
+  if(typeof CxRobotSdkJs !== 'undefined' && CxRobotSdkJs && CxRobotSdkJs.init){
+    CxRobotSdkJs.init("https://robot.chaoxing.com/embedChat?unitId=1454&robotId=a40732f8196740809de85a58cd40cc5b&groupId=0&openType=auto&openPage=coze", "2c1421b74d1607f1695476e356c5a85c");
+    console.log('[数智人] SDK 初始化成功');
+  } else if(retries > 0){
+    console.warn('[数智人] SDK 尚未就绪，1 秒后重试（剩余 ' + retries + ' 次）…');
+    setTimeout(function(){ initCxRobot(retries - 1); }, 1000);
+  } else {
+    console.error('[数智人] SDK 加载失败。请检查：1) 网络能否访问 robot.chaoxing.com（系统代理是否可用）；2) 是否被广告拦截插件屏蔽；3) 是否以 http(s) 方式打开页面。页面主体功能不受影响。');
+  }
+})(5);
+</script>
+</body>
+</html>

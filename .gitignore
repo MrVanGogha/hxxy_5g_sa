@@ -1,0 +1,28 @@
+# 编辑器 / IDE
+.vscode/
+.idea/
+.trae/
+*.suo
+*.user
+
+# 工具产物
+.screenshots/
+.trae-html-share-packages/
+
+# 操作系统
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+.DS_Store
+
+# 依赖与构建（如后续引入前端工具链）
+node_modules/
+dist/
+build/
+
+# 日志与临时文件
+*.log
+*.tmp
+*.bak
+~$*

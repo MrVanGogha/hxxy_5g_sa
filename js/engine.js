@@ -1,4 +1,4 @@
-﻿/* ============================================================
+﻿﻿/* ============================================================
    §2 判定引擎（纯函数，继承旧版规则，一处出口）
    ============================================================ */
 const ST = { UNSET:'unselected', PENDING:'pending', OK:'ok', BAD:'bad', WARN:'warn' };
@@ -79,22 +79,32 @@ function evQiRule(sc, sel){
   if(!isNum(v)) return { key:'qi', value:v, correct:sc.correct.qi, status:ST.UNSET, text:'尚未选择。' };
   const ok = sc.correct.qi.includes(Number(v));
   return { key:'qi', value:v, correct:sc.correct.qi, status: ok?ST.OK:ST.BAD,
-    text: ok ? '✅ 判定正确 — 下行缓冲/浏览类业务对时延不敏感，5QI=6 或 9 即可。'
-             : `❌ 判定错误 — 正确应为 5QI=${sc.correct.qi.join('或')}。该场景对时延不敏感，选 URLLC 级低时延 5QI 会浪费调度资源。` };
+    text: ok ? '✅ 判定正确 — 符合 5QI 速查表：视频监控/数据采集→4 或 6，控制/调度类→7，普通上网→8 或 9。'
+             : `❌ 判定错误 — 正确应为 5QI=${sc.correct.qi.join('或')}。按 5QI 速查表：视频监控/数据采集→4 或 6，控制/调度类→7，普通上网→8 或 9；选 URLLC 级低时延 5QI 会浪费调度资源。` };
 }
 function evUpfLocRule(sc, sel){
   const v = sel.upfLoc;
   if(!v) return { key:'upfLoc', value:v, correct:sc.correct.upfLoc, status:ST.UNSET, text:'尚未选择。' };
   const ok = sc.correct.upfLoc.includes(v);
   return { key:'upfLoc', value:v, correct:sc.correct.upfLoc, status: ok?ST.OK:ST.BAD,
-    text: ok ? '✅ 判定正确 — 时延不敏感，可集中部署降低建设与运维成本。'
-             : `❌ 判定错误 — 正确应为「${sc.correct.upfLoc.join('/')}」。该场景无需下沉边缘，集中部署性价比更高。` };
+    text: ok ? '✅ 判定正确 — 该场景时延要求 ≥20ms，UPF 可集中部署，降低建设与运维成本。'
+             : `❌ 判定错误 — 正确应为「${sc.correct.upfLoc.join('/')}」。材料规则：时延要求 ≥20ms 可集中部署，无需下沉边缘。` };
 }
 function evUpfSpec(sc, sel){
   const v = sel.upfSpec;
   if(!v) return { key:'upfSpec', value:v, status:ST.UNSET, text:'尚未选择。' };
   const m = capacityMetrics(sc, v);
   return { key:'upfSpec', value:v, status:m.status, text:(m.status===ST.OK?'✅ ':m.status===ST.WARN?'⚠️ ':'❌ ')+m.text, metric:m };
+}
+// ⑦ UE-AMBR：区间判定——不低于"单终端峰值×1.2 冗余"即合理（依据材料八单路带宽表可推导）
+function evAmbr(sc, sel){
+  const v = sel.ambr;
+  if(!v) return { key:'ambr', value:v, status:ST.UNSET, text:'尚未选择。' };
+  const val = AMBR_VAL[v], min = sc.ambrMin;
+  const ok = val >= min;
+  return { key:'ambr', value:v, status: ok?ST.OK:ST.BAD,
+    text: (ok?'✅ 判定正确 — ':'❌ 判定错误 — ')
+        + `本场景单终端峰值×1.2 冗余 ≈${min}Mbps（依据材料八单路带宽表推导），UE-AMBR 需 ≥ 该值；当前选择「${v}」（${val}Mbps）。` };
 }
 function evaluateAll(sc, sel){
   const params = {};
@@ -110,7 +120,7 @@ function evaluateAll(sc, sel){
     params.qi = evQiRule(sc, sel);
     params.upfLoc = evUpfLocRule(sc, sel);
   }
-  params.ambr = evSingleRule(sc, sel, 'ambr');
+  params.ambr = evAmbr(sc, sel);
   params.upfSpec = evUpfSpec(sc, sel);
   const metrics = {
     delay: (sc.category==='urllc' && isNum(sel.qi) && sel.upfLoc) ? delayMetrics(sc, sel.qi, sel.upfLoc) : null,

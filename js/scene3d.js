@@ -1,22 +1,22 @@
-﻿
+﻿﻿
 import * as THREE from 'three';
 import { BufferGeometryUtils } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
 
 /* ===== data.js ===== */
 // 场景数据：来自「5G 典型应用场景与网络需求特征对照表」
-// bw 单位 Mbps；lat 单位 ms（null 表示时延不敏感）；covKm 为覆盖面积 km²（null 表示园区/区域级覆盖）
+// bw 单位 Mbps，口径=（上行需求+下行需求）×1.2 冗余，与教学材料一致；lat 单位 ms；covKm 为覆盖面积 km²（null 表示园区/区域级覆盖）
 const S=[
- {id:'coal',zh:'智慧煤矿',en:'Smart Coal Mine',type:'URLLC',typeZh:'低时延型',cov:'覆盖 10 km²',covKm:10,bw:600,lat:30,latTxt:'<30 ms',r:60,note:'井下巷道与地面联动：无人矿卡、掘进机远程控制'},
- {id:'factory',zh:'智慧工厂',en:'Smart Factory',type:'URLLC',typeZh:'低时延型',cov:'园区级覆盖',covKm:null,bw:720,lat:20,latTxt:'<20 ms',r:56,note:'机器人、AGV 与产线视觉质检'},
- {id:'port',zh:'智慧港口',en:'Smart Port',type:'URLLC',typeZh:'低时延型',cov:'码头区域覆盖',covKm:null,bw:360,lat:10,latTxt:'<10 ms',r:76,note:'岸桥远程操控与集卡自动驾驶'},
- {id:'campus',zh:'智慧园区',en:'Smart Campus',type:'eMBB',typeZh:'大容量型',cov:'覆盖 1 km²',covKm:1,bw:480,lat:null,latTxt:'时延不敏感',r:58,note:'视频监控、人员车辆管理、物联感知'},
- {id:'grid',zh:'智慧电网',en:'Smart Grid',type:'URLLC',typeZh:'低时延型',cov:'50 km 带状覆盖',covKm:null,strip:true,bw:480,lat:15,latTxt:'<15 ms',r:78,note:'沿输电线路带状组网，无人机巡检与差动保护'},
- {id:'hospital',zh:'智慧医院',en:'Smart Hospital',type:'URLLC',typeZh:'低时延型',cov:'院区覆盖',covKm:null,bw:2500,lat:10,latTxt:'<10 ms',r:54,note:'远程会诊、移动查房、急救车实时传输'},
- {id:'airport',zh:'智慧机场',en:'Smart Airport',type:'eMBB',typeZh:'大容量型',cov:'覆盖 5 km²',covKm:5,bw:12800,lat:null,latTxt:'时延不敏感',r:66,note:'航站楼高密度接入、高清视频与行李追踪'},
- {id:'pit',zh:'智慧矿山',en:'Smart Open-pit Mine',type:'URLLC',typeZh:'低时延型',cov:'覆盖 15 km²',covKm:15,bw:516,lat:25,latTxt:'<25 ms',r:62,ph:1.12,note:'露天矿坑无人运输与电铲远程作业'}
+ {id:'coal',zh:'智慧煤矿',en:'Smart Coal Mine',type:'URLLC',typeZh:'低时延型',cov:'覆盖 10 km²',covKm:10,bw:360,lat:30,latTxt:'<30 ms',r:60,note:'井下巷道与地面联动：无人矿卡、掘进机远程控制'},
+ {id:'factory',zh:'智慧工厂',en:'Smart Factory',type:'URLLC',typeZh:'低时延型',cov:'5 万㎡ 厂房覆盖',covKm:null,bw:720,lat:20,latTxt:'<20 ms',r:56,note:'机器人、AGV 与产线视觉质检'},
+ {id:'port',zh:'智慧港口',en:'Smart Port',type:'URLLC',typeZh:'低时延型',cov:'码头区域覆盖',covKm:null,bw:600,lat:10,latTxt:'<10 ms',r:76,note:'岸桥远程操控与集卡自动驾驶'},
+ {id:'campus',zh:'智慧园区',en:'Smart Campus',type:'eMBB',typeZh:'大容量型',cov:'覆盖 1 km²',covKm:1,bw:1320,lat:50,latTxt:'<50 ms',r:58,note:'视频监控、人员车辆管理、物联感知'},
+ {id:'grid',zh:'智慧电网',en:'Smart Grid',type:'URLLC',typeZh:'低时延型',cov:'50 km 带状覆盖',covKm:null,strip:true,bw:240,lat:15,latTxt:'<15 ms',r:78,note:'沿输电线路带状组网，无人机巡检与差动保护'},
+ {id:'hospital',zh:'智慧医院',en:'Smart Hospital',type:'URLLC',typeZh:'低时延型',cov:'院区覆盖',covKm:null,bw:1080,lat:10,latTxt:'<10 ms',r:54,note:'远程会诊、移动查房、急救车实时传输'},
+ {id:'airport',zh:'智慧机场',en:'Smart Airport',type:'eMBB',typeZh:'大容量型',cov:'覆盖 5 km²',covKm:5,bw:1200,lat:30,latTxt:'<30 ms',r:66,note:'航站楼高密度接入、高清视频与行李追踪'},
+ {id:'pit',zh:'智慧矿山',en:'Smart Open-pit Mine',type:'URLLC',typeZh:'低时延型',cov:'覆盖 15 km²',covKm:15,bw:480,lat:25,latTxt:'<25 ms',r:62,ph:1.12,note:'露天矿坑无人运输与电铲远程作业'}
 ];
-const BWMAX=12800;
+const BWMAX=1320;
 const ACC={URLLC:0x2ec4d6,eMBB:0xffa733};
 const C={concrete:'#b7c1ca',dark:'#4a5560',glass:'#7fb3d5',red:'#c4503b',blue:'#3a7ca5',yellow:'#e0aa3e',green:'#5f9360',steel:'#8d9aa6',white:'#eef2f5',earth:'#6b5646',coal:'#23272b',water:'#2f6f9a'};
 const V=function(x,y,z){return new THREE.Vector3(x,y,z)};
@@ -1353,12 +1353,25 @@ function renderSpec(i){
   +'<div class="m"><h3>带宽对比（Mbps）</h3><div class="cmp" id="cmp">'+cmp+'</div></div>';
   $$('#cmp button').forEach(function(b){b.onclick=function(){go(+b.dataset.i,'scene')}});
 }
+function renderOverview(){
+  var order=S.map(function(x,k){return k}).sort(function(a,b){return S[b].bw-S[a].bw});
+  var cmp=order.map(function(k){var x=S[k],c=x.type==='URLLC'?'var(--urllc)':'var(--embb)';
+    return '<button data-i="'+k+'" aria-current="false"><span>'+x.zh+'</span><span class="b"><i style="width:'+Math.max(1.5,x.bw/BWMAX*100)+'%;background:'+c+'"></i></span><span class="v">'+x.bw+'</span></button>'}).join('');
+  var urllc=S.filter(function(x){return x.type==='URLLC'}).length;
+  $('#spec').innerHTML=
+   '<h2>场景总览</h2><div class="sub"><span>Overview</span><span class="chip urllc">低时延型 × '+urllc+'</span><span class="chip embb">大容量型 × '+(S.length-urllc)+'</span></div>'
+  +'<p class="note" style="margin:0 0 10px;font-size:13px">环绕观察 8 个行业的 5G SA 专网沙盘。点击左侧列表或场景标签进入对应场景，或直接进入工作台开始配置练习。</p>'
+  +'<div class="m"><h3>3D 怎么读</h3><ul class="read"><li><b>粒子数量</b><span>对应带宽，数据越多粒子越密</span></li><li><b>流动速度</b><span>对应时延，要求越严粒子越快</span></li><li><b>线框罩体</b><span>示意覆盖范围，电网为带状罩体</span></li><li><b>扩散光环</b><span>5G 基站的信号发射，颜色区分 URLLC 与 eMBB</span></li></ul></div>'
+  +'<div class="m"><h3>带宽对比（Mbps）</h3><div class="cmp" id="cmp">'+cmp+'</div></div>';
+  $$('#cmp button').forEach(function(b){b.onclick=function(){go(+b.dataset.i,'scene')}});
+}
 function go(i,mode){
   sel=i;view=mode;
-  $$('.item').forEach(function(b,k){b.setAttribute('aria-current',k===i)});
-  $('#vOv').setAttribute('aria-pressed',mode==='overview');$('#vSc').setAttribute('aria-pressed',mode==='scene');
-  renderSpec(i);
-  labels.forEach(function(b,k){b.setAttribute('aria-current',k===i)});
+  var isScene=mode==='scene';
+  $$('.item').forEach(function(b,k){b.setAttribute('aria-current',isScene&&k===i)});
+  $('#vOv').setAttribute('aria-pressed',mode==='overview');$('#vSc').setAttribute('aria-pressed',isScene);
+  if(isScene)renderSpec(i);else renderOverview();
+  labels.forEach(function(b,k){b.setAttribute('aria-current',isScene&&k===i)});
   if(gl){groups.forEach(function(g,k){g.visible=mode==='overview'||k===i;if(g.userData.sa)g.userData.sa.group.visible=saOn});if(overviewHub)overviewHub.visible=mode==='overview';setGoal()}
   try{history.replaceState(null,'','#'+(mode==='overview'?'overview':S[i].id))}catch(e){}
 }
